@@ -13,9 +13,23 @@ Base = declarative_base()
 class BaseModel:
     '''This class is the base class for all other classes in this project'''
 
+    def __init__(self, *args, **kwargs):
+        '''This method initializes a new instance of BaseModel'''
+        if kwargs:
+            for key, value in kwargs.items():
+                if key != '__class__':
+                    setattr(self, key, value)
+
     def save(self):
         '''This method saves the instance to the database'''
         models.storage.new(self)
+        models.storage.save()
+
+    @classmethod
+    def save_all(self, objects: list):
+        '''This method saves the instance to the database'''
+        for obj in objects:
+            models.storage.new(obj)
         models.storage.save()
 
     def delete(self):

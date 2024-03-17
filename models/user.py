@@ -17,6 +17,10 @@ class User(BaseModel, Base):
     picture = Column(LargeBinary, nullable=True)
     token = Column(String(128), nullable=True)
 
+    def __init__(self, *args, **kwargs):
+        '''initializes a user'''
+        super().__init__(*args, **kwargs)
+
     def to_dict(self):
         '''returns a dictionary representation of a User instance'''
         return {

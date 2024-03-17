@@ -5,12 +5,14 @@ import models
 import os
 from models.base_model import BaseModel, Base
 from models.user import User
+from models.categories import Category
 import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 
 classes = {
-    'User': User
+    'User': User,
+    'Category': Category
 }
 
 
@@ -25,14 +27,13 @@ class DBStorage:
         SECOND_HAND_MYSQL_PWD = os.getenv('second_hand_mysql_pwd')
         SECOND_HAND_MYSQL_HOST = os.getenv('second_hand_mysql_host')
         SECOND_HAND_MYSQL_DB = os.getenv('second_hand_mysql_db')
-        SECOND_HAND_MYSQL_PORT = os.getenv('second_hand_mysql_port')
+        SECOND_HAND_MYSQL_PORT = os.getenv('second_hand_mysql_port') or 3306
         self.__engine = create_engine('mysql+mysqldb://{}:{}@{}:{}/{}'
                                       .format(SECOND_HAND_MYSQL_USER,
                                               SECOND_HAND_MYSQL_PWD,
                                               SECOND_HAND_MYSQL_HOST,
                                               SECOND_HAND_MYSQL_PORT,
-                                              SECOND_HAND_MYSQL_DB),
-                                      pool_pre_ping=True)
+                                              SECOND_HAND_MYSQL_DB))
 
     def new(self, obj) -> None:
         '''This method adds a new object to the current database session'''
@@ -42,6 +43,36 @@ class DBStorage:
     def save(self) -> None:
         '''This method commits all changes to the current database session'''
         self.__session.commit()
+
+    def all(self, cls=None) -> dict:
+        ''''This method queries the current database session
+        based on the class name'''
+        objects = {}
+        if not cls:
+            print('cls required')
+            return
+        if type(cls) == str:
+            cls = classes[cls]
+        result = self.__session.query(cls).all()
+        for obj in result:
+            key = '{}.{}'.format(type(obj).__name__, obj.id)
+            objects[key] = obj.to_dict()
+        return objects
+
+    def get(self, cls, id) -> object:
+        '''This method retrieves an object from the current database session'''
+        if cls and id:
+            return self.__session.query(cls).filter_by(id=id).first().to_dict()
+        return None
+
+    def update(self, cls, id, **kwargs) -> None:
+        '''This method updates an object from the current database session'''
+        if cls and id:
+            obj = self.__session.query(cls).filter_by(id=id).first()
+            for key, value in kwargs.items():
+                if key != '__class__':
+                    setattr(obj, key, value)
+            self.save()
 
     def delete(self, obj=None) -> None:
         '''This method deletes an object from the current database session'''
