@@ -3,17 +3,17 @@
 
 from models import storage
 from models.user import User
-from PIL import Image
+#from PIL import Image
 from models.base_model  import BaseModel
 from models.categories import Category
 
 '''testing the user class'''
-image = Image.open('./yaay.jpg')
+""""image = Image.open('./yaay.jpg')
 resized_image = image.resize((100, 100))
 resized_image.save('yaay.jpg')
-image = Image.open('yaay.jpg')
+image = Image.open('yaay.jpg')"""
 
-user = User(name='Alaa', email='alaa251996@gmail.com', password='123456', phone_number='1234567890', picture=image.tobytes(), token='123456')
+user = User(name='khalid', email='khalid@gmail.com', password='123456', phone_number='1234567890', picture= None, token='123456')
 BaseModel.save(user)
 
 # users = storage.all(User)
@@ -47,4 +47,3 @@ print(users)
 
 # categories = storage.all(Category)
 # print(categories)
-

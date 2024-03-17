@@ -30,5 +30,4 @@ class User(BaseModel, Base):
             'phone_number': self.phone_number,
             'picture': self.picture,
             'token': self.token,
-            '__class__': 'User'
         }
