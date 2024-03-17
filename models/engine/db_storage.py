@@ -23,10 +23,10 @@ class DBStorage:
 
     def __init__(self) -> None:
         '''This method creates a new instance of DBStorage'''
-        SECOND_HAND_MYSQL_USER = os.getenv('second_hand_mysql_user')
-        SECOND_HAND_MYSQL_PWD = os.getenv('second_hand_mysql_pwd')
-        SECOND_HAND_MYSQL_HOST = os.getenv('second_hand_mysql_host')
-        SECOND_HAND_MYSQL_DB = os.getenv('second_hand_mysql_db')
+        SECOND_HAND_MYSQL_USER = os.getenv('second_hand_mysql_user') or 'second_hand'
+        SECOND_HAND_MYSQL_PWD = os.getenv('second_hand_mysql_pwd') or 'Second_hand_pwd1'
+        SECOND_HAND_MYSQL_HOST = os.getenv('second_hand_mysql_host') or 'localhost'
+        SECOND_HAND_MYSQL_DB = os.getenv('second_hand_mysql_db') or 'second_hand'
         SECOND_HAND_MYSQL_PORT = os.getenv('second_hand_mysql_port') or 3306
         self.__engine = create_engine('mysql+mysqldb://{}:{}@{}:{}/{}'
                                       .format(SECOND_HAND_MYSQL_USER,
@@ -62,7 +62,7 @@ class DBStorage:
     def get(self, cls, id) -> object:
         '''This method retrieves an object from the current database session'''
         if cls and id:
-            return self.__session.query(cls).filter_by(id=id).first().to_dict()
+            return self.__session.query(cls).filter_by(id=id).first()
         return None
 
     def update(self, cls, id, **kwargs) -> None:
