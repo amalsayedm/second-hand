@@ -17,7 +17,10 @@ class BaseModel:
         '''This method initializes a new instance of BaseModel'''
         if kwargs:
             for key, value in kwargs.items():
-                if key != '__class__':
+                if key == 'picture':
+                    encoded_data = value.encode('utf-8')
+                    setattr(self, key, encoded_data)
+                else:
                     setattr(self, key, value)
 
     def save(self):

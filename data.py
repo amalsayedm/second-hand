@@ -6,26 +6,28 @@ from models.user import User
 from PIL import Image
 from models.base_model  import BaseModel
 from models.categories import Category
+from models.items import Item
+import base64
 
 '''testing the user class'''
-image = Image.open('./yaay.jpg')
-resized_image = image.resize((100, 100))
-resized_image.save('yaay.jpg')
-image = Image.open('yaay.jpg')
+# image = Image.open('./yaay.jpg')
+# resized_image = image.resize((100, 100))
+# resized_image.save('yaay.jpg')
+# image = Image.open('yaay.jpg')
 
-user = User(name='Alaa', email='alaa251996@gmail.com', password='123456', phone_number='1234567890', picture=image.tobytes(), token='123456')
-BaseModel.save(user)
+# user = User(name='Alaa', email='alaa251996@gmail.com', password='123456', phone_number='1234567890', picture=image.tobytes(), token='123456')
+# BaseModel.save(user)
 
+# # users = storage.all(User)
+# # print(users)
+# # # print(users['User.1'].name)
+# # # print(users['User.1'].email)
+# # alaa = storage.get(User, 1)
+# # print(alaa.to_dict())
+# # BaseModel.delete(alaa)
+# # print('deleted ==========')
 # users = storage.all(User)
 # print(users)
-# # print(users['User.1'].name)
-# # print(users['User.1'].email)
-# alaa = storage.get(User, 1)
-# print(alaa.to_dict())
-# BaseModel.delete(alaa)
-# print('deleted ==========')
-users = storage.all(User)
-print(users)
 
 # update = storage.update(User, 1,email='afsgeh')
 # ala = storage.get(User, 1)
@@ -47,4 +49,19 @@ print(users)
 
 # categories = storage.all(Category)
 # print(categories)
+
+'''testing the items class'''
+image = "yaay.jpg"
+with open(image, "rb") as image_file:
+    file_encoded = base64.b64encode(image_file.read()).decode('utf-8')
+item = Item(name='Samsung tv', description='LG 11', price=11000, picture=file_encoded, user_id=1, category_id=1)
+BaseModel.save(item)
+
+all_items = storage.all(Item)
+print(all_items)
+
+tv_items = storage.search_items('tv')
+print(tv_items)
+
+
 

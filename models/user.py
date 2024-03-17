@@ -15,7 +15,7 @@ class User(BaseModel, Base):
     password = Column(String(128), nullable=False)
     phone_number = Column(String(128), nullable=False)
     picture = Column(LargeBinary, nullable=True)
-    token = Column(String(128), nullable=True)
+    token = Column(String(128), nullable=True, unique=True)
 
     def __init__(self, *args, **kwargs):
         '''initializes a user'''
@@ -29,6 +29,5 @@ class User(BaseModel, Base):
             'email': self.email,
             'phone_number': self.phone_number,
             'picture': self.picture,
-            'token': self.token,
-            '__class__': 'User'
+            'token': self.token
         }
