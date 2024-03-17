@@ -3,8 +3,11 @@
 from api.v1.views import app_views
 from flask import abort, jsonify, make_response, request
 from flasgger.utils import swag_from
+from models import storage
+from models.user import User
+from models.categories import Category
 
-@app_views.route('/add-user', methods=['POST'], strict_slashes=False)
+@app_views.route('/user', methods=['POST'], strict_slashes=False)
 def add_user():
     """
     Creates a user
@@ -16,7 +19,7 @@ def add_user():
         abort(400, description="Missing user email")
     if 'password' not in request.get_json():
         abort(400, description="Missing user password")
-    if 'whatsapp' not in request.get_json():
+    if 'phone_number' not in request.get_json():
         abort(400, description="Missing user whatsapp number")
    
     data = request.get_json()
@@ -24,99 +27,38 @@ def add_user():
     instance.save()
     return make_response(jsonify(instance.to_dict()), 201)
 
-@app_views.route('/add-favorite', methods=['POST'], strict_slashes=False)
-def post_favorite():
+@app_views.route('/user/<token>', methods=['GET'], strict_slashes=False)
+def get_user(token):
+
+    user = storage.getuser_bytoken(token)
+    if not user:
+        abort(404)
+    return jsonify(user.to_dict())
+
+@app_views.route('/categories', methods=['GET'], strict_slashes=False)
+def get_categories():
+
+    all_categories = storage.all(Category)
+    return jsonify(all_categories)
+
+@app_views.route('/user/<token>', methods=['PUT'], strict_slashes=False)
+def put_user(token):
     """
-    Creates a favorite
+    Updates a user
     """
+    user = storage.getuser_bytoken(token)
+
+    if not user:
+        abort(404)
+
     if not request.get_json():
         abort(400, description="Not a JSON")
 
-    if 'user_id' not in request.get_json():
-        abort(400, description="Missing user id")
-    if 'item_id' not in request.get_json():
-        abort(400, description="Missing item id")
-   
+    ignore = ['id']
+
     data = request.get_json()
-    instance = Favorites(**data)
-    instance.save()
-    return make_response(jsonify(instance.to_dict()), 201)
-
-@app_views.route('/favorites/<id>', methods=['DELETE'],
-                 strict_slashes=False)
-def delete_favorite(id):
-    """
-    Deletes an Object
-    """
-
-    """favorite = storage.get(Favorites, id)
-
-    if not favorite:
-        abort(404)
-
-    storage.delete(favorite)
+    for key, value in data.items():
+        if key not in ignore:
+            setattr(user, key, value)
     storage.save()
-
-    return make_response(jsonify({}), 200)"""
-
-@app_views.route('/favorites/<user_id>', methods=['GET'], strict_slashes=False)
-def get_userfavorites(user_id):
-
-    all_fav = storage.getuserfavorites(user_id).values()
-    return jsonify(all_fav)
-
-@app_views.route('/follow-user', methods=['POST'], strict_slashes=False)
-def post_favorite():
-    """
-    Creates a following recored
-    """
-    if not request.get_json():
-        abort(400, description="Not a JSON")
-
-    if 'user_id' not in request.get_json():
-        abort(400, description="Missing user id")
-    if 'follwing_id' not in request.get_json():
-        abort(400, description="Missing following id")
-   
-    data = request.get_json()
-    instance = followers(**data)
-    instance.save()
-    return make_response(jsonify(instance.to_dict()), 201)
-
-@app_views.route('/followers/<id>', methods=['GET'],
-                 strict_slashes=False)
-def get_followers(id):
-    """
-    get user followers
-    """
-    all_followers = storage.getuserfollowers(user_id).values()
-    return jsonify(list_r)
-
-@app_views.route('/followings/<id>', methods=['GET'],
-                 strict_slashes=False)
-def get_followings(id):
-    """
-    get user followers
-    """
-    all_followings = storage.getuserfollowers(user_id).values()
-    list_r = []
-    for f in followings:
-        list_r.append(f.to_dict())
-    return jsonify(list_r)
-
-@app_views.route('/followings/<id>', methods=['DELETE'],
-                 strict_slashes=False)
-def delete_favorite(id):
-    """
-    Deletes an Object
-    """
-
-    following = storage.get(Favorites, id)
-
-    if not following:
-        abort(404)
-
-    storage.delete(following)
-    storage.save()
-
-    return make_response(jsonify({}), 200)
+    return make_response(jsonify(user.to_dict()), 200)

@@ -1,86 +1,123 @@
-#!/usr/bin/python3
-"""
-Contains the class DBStorage
-"""
+#!/usr/bin/env python3
+'''This module defines a class to manage db storage for second_hand'''
 
 import models
-from os import getenv
+import os
+from models.base_model import BaseModel, Base
+from models.user import User
+from models.categories import Category
 import sqlalchemy
 from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 
-classes = {"Recipe": Recipe, "category":Category, "Favorites":Favorites ,"User":User}
+classes = {
+    'User': User,
+    'Category': Category
+}
+
 
 class DBStorage:
-    """interaacts with the MySQL database"""
+    '''This class manages storage of second_hand objects in a database'''
     __engine = None
     __session = None
 
-    def __init__(self):
-        """Instantiate a DBStorage object"""
-        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.
-                                      format('recipes_dev',
-                                             'recipes_dev_pwd',
-                                             'localhost',
-                                             'recipes_dev_db'))
-    
-    def all(self, cls):
-        """query on the current database session"""
-        new_dict = {}
-    
-        objs = self.__session.query(cls).all()
-        return (objs)
+    _mysql_user = 'second_hand'
+    _mysql_pwd =  'Second_hand_pwd1'
+    _mysql_host = 'localhost'
+    _mysql_db = 'second_hand'
+    _mysql_port = 3306
 
-    def new(self, obj):
-        """add the object to the current database session"""
-        self.__session.add(obj)
+    def __init__(self) -> None:
+        '''This method creates a new instance of DBStorage'''
+        SECOND_HAND_MYSQL_USER = os.getenv('second_hand_mysql_user') or self._mysql_user
+        SECOND_HAND_MYSQL_PWD = os.getenv('second_hand_mysql_pwd') or self._mysql_pwd
+        SECOND_HAND_MYSQL_HOST = os.getenv('second_hand_mysql_host') or self._mysql_host
+        SECOND_HAND_MYSQL_DB = os.getenv('second_hand_mysql_db') or self._mysql_db
+        SECOND_HAND_MYSQL_PORT = os.getenv('second_hand_mysql_port') or self._mysql_port
+        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}:{}/{}'
+                                      .format(SECOND_HAND_MYSQL_USER,
+                                              SECOND_HAND_MYSQL_PWD,
+                                              SECOND_HAND_MYSQL_HOST,
+                                              SECOND_HAND_MYSQL_PORT,
+                                              SECOND_HAND_MYSQL_DB))
 
-    def save(self):
-        """commit all changes of the current database session"""
+    def new(self, obj) -> None:
+        '''This method adds a new object to the current database session'''
+        if obj:
+            self.__session.add(obj)
+
+    def save(self) -> None:
+        '''This method commits all changes to the current database session'''
         self.__session.commit()
 
-    def delete(self, obj=None):
-        """delete from the current database session obj if not None"""
-        if obj is not None:
+    def all(self, cls=None) -> dict:
+        ''''This method queries the current database session
+        based on the class name'''
+        objects = []
+        if not cls:
+            print('cls required')
+            return
+        if type(cls) == str:
+            cls = classes[cls]
+        result = self.__session.query(cls).all()
+        for obj in result:
+            objects.append(obj.to_dict())
+        return objects
+
+    def get(self, cls, id) -> object:
+        '''This method retrieves an object from the current database session'''
+        if cls and id:
+            return self.__session.query(cls).filter_by(id=id).first()
+        return None
+
+    def update(self, cls, id, **kwargs) -> None:
+        '''This method updates an object from the current database session'''
+        if cls and id:
+            obj = self.__session.query(cls).filter_by(id=id).first()
+            for key, value in kwargs.items():
+            
+                setattr(obj, key, value)
+            self.save()
+
+    def delete(self, obj=None) -> None:
+        '''This method deletes an object from the current database session'''
+        if obj:
             self.__session.delete(obj)
 
-    def reload(self):
-        """reloads data from the database"""
+    def reload(self) -> None:
+        '''This method creates all tables in the database'''
         Base.metadata.create_all(self.__engine)
-        sess_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
-        Session = scoped_session(sess_factory)
-        self.__session = Session
-    
-    def getItemsbycat(self,cat_id):
-        results = self.__session.query(Items).filter(cat.type == cat_id).all()
-        return (results)
-    def getItemsbyuser(self,user_id):
-        results = self.__session.query(Items).filter(user.id == user_id).all()
-        return (results)
-    
-    def getuserfavorites(self,user_id):
-        items = self.__session.query(Items).join(Favorites).filter(Favorites.user_id == user_id).all()
-        return (items)
-    
-    def getuserfollowers(self,user_id):
-        items = self.__session.query(Users).join(followers).filter(followers.followind_id == user_id).all()
-        return (items)
+        session_factory = sessionmaker(
+            bind=self.__engine, expire_on_commit=False)
+        Session = scoped_session(session_factory)
+        self.__session = Session()
 
-    def get_userfollowings(self,user_id):
-        items = self.__session.query(Users).join(followers).filter(followers.user_id == user_id).all()
-        return (items)
-
-    
     def close(self):
-        """call remove() method on the private session attribute"""
+        '''This method closes the current session'''
         self.__session.remove()
-
-    def get(self, cls, id):
-        """
-        Returns the object based on the class name and its ID, or
-        None if not found
-        """
-        result = self.__session.query(cls).get(id)
-        if(result):
-            return result
+    
+    def getuser_bytoken(self,token) -> object:
+        '''This method retrieves an object from the current database session'''
+        if token:
+            return self.__session.query(User).filter_by(token=token).first()
         return None
+    
+    # def getItemsbycat(self,cat_id):
+    #     results = self.__session.query(Items).filter(cat.type == cat_id).all()
+    #     return (results)
+    
+    # def getItemsbyuser(self,user_id):
+    #     results = self.__session.query(Items).filter(user.id == user_id).all()
+    #     return (results)
+    
+    # def getuserfavorites(self,user_id):
+    #     items = self.__session.query(Items).join(Favorites).filter(Favorites.user_id == user_id).all()
+    #     return (items)
+    
+    # def getuserfollowers(self,user_id):
+    #     items = self.__session.query(Users).join(followers).filter(followers.followind_id == user_id).all()
+    #     return (items)
+
+    # def get_userfollowings(self,user_id):
+    #     items = self.__session.query(Users).join(followers).filter(followers.user_id == user_id).all()
+    #     return (items)

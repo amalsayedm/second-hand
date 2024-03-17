@@ -1,0 +1,3 @@
+setup_mysql_dev.sql
+.vscode/
+__pycache__
