@@ -7,6 +7,7 @@ from PIL import Image
 from models.base_model  import BaseModel
 from models.categories import Category
 from models.items import Item
+from models.favorites import Favorite
 import base64
 
 '''testing the user class'''
@@ -44,8 +45,11 @@ import base64
 # category7 = Category(name='Accessories')
 # category8 = Category(name='Toys')
 # category9 = Category(name='Others')
+# category10 = Category(name='Mobile and Tablets')
+# category11 = Category(name='Computers & Accessories')
 
-# BaseModel.save_all([category1, category2, category3, category4, category5, category6, category7, category8, category9])
+
+# BaseModel.save_all([category10, category11])
 
 # categories = storage.all(Category)
 # print(categories)
@@ -53,15 +57,35 @@ import base64
 '''testing the items class'''
 image = "yaay.jpg"
 with open(image, "rb") as image_file:
-    file_encoded = base64.b64encode(image_file.read()).decode('utf-8')
-item = Item(name='Samsung tv', description='LG 11', price=11000, picture=file_encoded, user_id=1, category_id=1)
-BaseModel.save(item)
+     file_encoded = base64.b64encode(image_file.read()).decode('utf-8')
+# item = Item(name='Samsung tv', description='LG 11', price=11000, picture=file_encoded, user_id=1, category_id=1)
+# BaseModel.save(item)
 
-all_items = storage.all(Item)
-print(all_items)
+# all_items = storage.all(Item)
+# print(all_items)
 
-tv_items = storage.search_items('tv')
-print(tv_items)
+# tv_items = storage.search_items('tv')
+# print(tv_items)
 
+'''testing favourites'''
+# user1 = User(name='Alice', email='alice@example.com', password='password1', phone_number='1234567890')
+# user2 = User(name='Bob', email='bob@example.com', password='password2', phone_number='0987654321')
+# BaseModel.save_all([user1, user2, category10, category11])
 
+item1 = Item(name='Phone', description='Smartphone', price=500, picture=file_encoded, size=5, user_id=10, category_id=19)
+item2 = Item(name='Laptop', description='Notebook computer', price=1000, picture=file_encoded, size=15, user_id=11, category_id=20)
 
+# BaseModel.save_all([item1, item2])
+
+favorite1 = Favorite(user_id=10, item_id=1)
+favorite2 = Favorite(user_id=11, item_id=2)
+favorite3 = Favorite(user_id=10, item_id=2)
+
+# BaseModel.save_all([favorite1, favorite2])
+BaseModel.save(favorite3)
+
+# get_user_10= storage.get(User, 10)
+# print(get_user_10.to_dict())
+
+get_user_10_favorites = storage.get_favorites(10)
+print(get_user_10_favorites)

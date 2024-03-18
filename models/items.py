@@ -4,6 +4,7 @@
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, Integer, String, ForeignKey, LargeBinary
 from sqlalchemy.orm import relationship
+from models.favorites import Favorite
 
 
 class Item(BaseModel, Base):
@@ -13,9 +14,11 @@ class Item(BaseModel, Base):
     name = Column(String(128), nullable=False)
     description = Column(String(128), nullable=False)
     price = Column(Integer, nullable=False)
-    picture = Column(LargeBinary, nullable=True)
+    picture = Column(LargeBinary, nullable=False)
+    size = Column(Integer, nullable=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     category_id = Column(Integer, ForeignKey('categories.id'), nullable=False)
+    favorites = relationship("Favorite", back_populates="item") 
 
     def __init__(self, *args, **kwargs):
         '''initializes an item'''
@@ -29,6 +32,7 @@ class Item(BaseModel, Base):
             'description': self.description,
             'price': self.price,
             'picture': self.picture,
+            'size': self.size,
             'user_id': self.user_id,
             'category_id': self.category_id
         }

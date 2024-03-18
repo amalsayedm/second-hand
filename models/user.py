@@ -4,6 +4,7 @@
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, Integer, String, LargeBinary
 from sqlalchemy.orm import relationship
+from models.favorites import Favorite
 
 
 class User(BaseModel, Base):
@@ -15,7 +16,9 @@ class User(BaseModel, Base):
     password = Column(String(128), nullable=False)
     phone_number = Column(String(128), nullable=False)
     picture = Column(LargeBinary, nullable=True)
-    token = Column(String(128), nullable=True, unique=True)
+    token = Column(String(128), nullable=False, unique=True)
+    favorites = relationship("Favorite", back_populates="user")
+
 
     def __init__(self, *args, **kwargs):
         '''initializes a user'''
@@ -29,5 +32,6 @@ class User(BaseModel, Base):
             'email': self.email,
             'phone_number': self.phone_number,
             'picture': self.picture,
-            'token': self.token
+            'token': self.token,
+            'favorites': [fav.item_id for fav in self.favorites]
         }
