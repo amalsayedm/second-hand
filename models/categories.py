@@ -11,8 +11,8 @@ class Category(BaseModel, Base):
     __tablename__ = 'categories'
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(128), nullable=False)
-    '''items = relationship(
-        'Item', backref='category', cascade='all, delete-orphan')'''
+    items = relationship(
+        'Item', backref='category', cascade='all, delete-orphan')
 
     def __init__(self, *args, **kwargs):
         '''initializes a category'''
@@ -22,6 +22,5 @@ class Category(BaseModel, Base):
         '''returns a dictionary representation of a Category instance'''
         return {
             'id': self.id,
-            'name': self.name,
-            '__class__': 'Category'
+            'name': self.name
         }
