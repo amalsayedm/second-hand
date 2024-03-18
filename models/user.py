@@ -4,6 +4,8 @@
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, Integer, String, LargeBinary
 from sqlalchemy.orm import relationship
+from models.favorites import Favorite
+from models.followers import Follower
 
 
 class User(BaseModel, Base):
@@ -15,7 +17,12 @@ class User(BaseModel, Base):
     password = Column(String(128), nullable=False)
     phone_number = Column(String(128), nullable=False)
     picture = Column(LargeBinary, nullable=True)
-    token = Column(String(128), nullable=True)
+    token = Column(String(128), nullable=False, unique=True)
+    following = relationship(
+        "User", secondary='followers',
+        primaryjoin=id == Follower.follower_id,
+        secondaryjoin=id == Follower.following_id,
+        backref="followers")
 
     def __init__(self, *args, **kwargs):
         '''initializes a user'''
@@ -31,4 +38,6 @@ class User(BaseModel, Base):
             'phone_number': self.phone_number,
             'picture': self.picture.decode('utf-8'),
             'token': self.token,
+            'followers': [follower.id for follower in self.followers],
+            'following': [following.id for following in self.following]
         }

@@ -38,3 +38,4 @@ class BaseModel:
     def delete(self):
         '''This method deletes the instance from the database'''
         models.storage.delete(self)
+        models.storage.save()
