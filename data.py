@@ -8,6 +8,7 @@ from models.base_model  import BaseModel
 from models.categories import Category
 from models.items import Item
 from models.favorites import Favorite
+from models.recommendations import Recommendation
 import base64
 
 '''testing the user class'''
@@ -87,7 +88,7 @@ favorite3 = Favorite(user_id=10, item_id=2)
 # get_user_10= storage.get(User, 10)
 # print(get_user_10.to_dict())
 
-# get_user_10_favorites = storage.get_favorites(10)
+# get_user_10_favorites = storage.get_user_favorites(10)
 # print(get_user_10_favorites)
 
 user1 = User(name='hamza', email='hamza@example.com', password='password5', phone_number='1234567890', picture=file_encoded, token='2356')
@@ -103,9 +104,13 @@ suzan = storage.get(User, 12)
 # suzan.following.append(roka)
 # storage.save()
 
-hamza = storage.get(User, 14)
-roka = storage.get(User, 15)
-suzan = storage.get(User, 12)
+# hamza = storage.get(User, 14)
+# # print(hamza.get_user_following())
+# print(hamza.get_user_followers())
+# roka = storage.get(User, 15)
+# print(roka.get_user_following())
+# print(roka.get_user_followers())
+# suzan = storage.get(User, 12)
 # print('============hamza===================')
 # print(hamza.to_dict())
 # print('============roka===================')
@@ -113,8 +118,8 @@ suzan = storage.get(User, 12)
 # print('============suzan===================')
 # print(suzan.to_dict())
 
-get_followers = storage.get_user_followers(15)
-print([follower.get('name') for follower in get_followers])
+# get_followers = storage.get_user_followers(15)
+# print([follower.get('name') for follower in get_followers])
 
 # get_following = storage.get_user_following(14)
 # print(get_following)
@@ -124,3 +129,14 @@ print([follower.get('name') for follower in get_followers])
 # 
 # print(hamza.to_dict())
 
+'''testing recommendations'''
+
+recommendation1 = Recommendation(user_id=10, item_id=1)
+recommendation2 = Recommendation(user_id=11, item_id=2)
+recommendation3 = Recommendation(user_id=10, item_id=2)
+
+# BaseModel.save_all([recommendation1, recommendation2, recommendation3])
+
+user10_recommendations = storage.get_user_recommendations(10)
+user11_recommendations = storage.get_user_recommendations(11)
+print(user11_recommendations)

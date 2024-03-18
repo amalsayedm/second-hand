@@ -6,6 +6,7 @@ from sqlalchemy import Column, Integer, String, LargeBinary
 from sqlalchemy.orm import relationship
 from models.favorites import Favorite
 from models.followers import Follower
+from models.recommendations import Recommendation
 
 
 class User(BaseModel, Base):
@@ -24,6 +25,7 @@ class User(BaseModel, Base):
         primaryjoin=id == Follower.follower_id,
         secondaryjoin=id == Follower.following_id,
         backref="followers")
+    recommendations = relationship("Recommendation", back_populates="user")
 
     def __init__(self, *args, **kwargs):
         '''initializes a user'''
@@ -42,3 +44,11 @@ class User(BaseModel, Base):
             'followers': [follower.id for follower in self.followers],
             'following': [following.id for following in self.following]
         }
+
+    def get_user_following(self):
+        '''This method retrieves the users following the current user'''
+        return [user.to_dict() for user in self.following]
+
+    def get_user_followers(self):
+        '''This method retrieves the users following the current user'''
+        return [user.to_dict() for user in self.followers]

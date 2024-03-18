@@ -10,6 +10,7 @@ from models.categories import Category
 from models.items import Item
 from models.favorites import Favorite
 from models.followers import Follower
+from models.recommendations import Recommendation
 import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -19,7 +20,8 @@ classes = {
     'Category': Category,
     'Item': Item,
     'Favorite': Favorite,
-    'Follower': Follower
+    'Follower': Follower,
+    'Recommendation': Recommendation,
 }
 
 
@@ -116,30 +118,18 @@ class DBStorage:
         '''This method retrieves an object from the current database session'''
         objects = []
         if user_id:
-            result = self.__session.query(Favorite).filter_by(
-                user_id=user_id).all()
-            for obj in result:
-                objects.append(self.get(cls=Item, id=obj.item_id).to_dict())
-        return objects
+            items = self.__session.query(Item).join(Favorite).filter(
+                Favorite.user_id == user_id).all()
+            for item in items:
+                objects.append(item.to_dict())
+        return (objects)
 
-    def get_user_following(self, user_id) -> List[dict]:
+    def get_user_recommendations(self, user_id) -> List[dict]:
         '''This method retrieves an object from the current database session'''
         objects = []
         if user_id:
-            result = self.__session.query(Follower).filter_by(
-                follower_id=user_id).all()
-            for obj in result:
-                objects.append(self.get(
-                    cls=User, id=obj.following_id).to_dict())
-        return objects
-
-    def get_user_followers(self, user_id) -> List[dict]:
-        '''This method retrieves an object from the current database session'''
-        objects = []
-        if user_id:
-            result = self.__session.query(Follower).filter_by(
-                following_id=user_id).all()
-            for obj in result:
-                objects.append(self.get(
-                    cls=User, id=obj.follower_id).to_dict())
-        return objects
+            items = self.__session.query(Item).join(Recommendation).filter(
+                Recommendation.user_id == user_id).all()
+            for item in items:
+                objects.append(item.to_dict())
+        return (objects)
