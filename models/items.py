@@ -18,7 +18,7 @@ class Item(BaseModel, Base):
     size = Column(Integer, nullable=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     category_id = Column(Integer, ForeignKey('categories.id'), nullable=False)
-    favorites = relationship("Favorite", back_populates="item") 
+    favorites = relationship("Favorite", back_populates="item")
 
     def __init__(self, *args, **kwargs):
         '''initializes an item'''

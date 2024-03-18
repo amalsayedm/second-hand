@@ -9,6 +9,7 @@ from models.user import User
 from models.categories import Category
 from models.items import Item
 from models.favorites import Favorite
+from models.followers import Follower
 import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -17,7 +18,8 @@ classes = {
     'User': User,
     'Category': Category,
     'Item': Item,
-    'Favorite': Favorite
+    'Favorite': Favorite,
+    'Follower': Follower
 }
 
 
@@ -28,10 +30,10 @@ class DBStorage:
 
     def __init__(self) -> None:
         '''This method creates a new instance of DBStorage'''
-        SECOND_HAND_MYSQL_USER = os.getenv('second_hand_mysql_user') or 'second_hand'
-        SECOND_HAND_MYSQL_PWD = os.getenv('second_hand_mysql_pwd') or 'Second_hand_pwd1'
-        SECOND_HAND_MYSQL_HOST = os.getenv('second_hand_mysql_host') or 'localhost'
-        SECOND_HAND_MYSQL_DB = os.getenv('second_hand_mysql_db') or 'second_hand'
+        SECOND_HAND_MYSQL_USER = os.getenv('second_hand_mysql_user')
+        SECOND_HAND_MYSQL_PWD = os.getenv('second_hand_mysql_pwd')
+        SECOND_HAND_MYSQL_HOST = os.getenv('second_hand_mysql_host')
+        SECOND_HAND_MYSQL_DB = os.getenv('second_hand_mysql_db')
         SECOND_HAND_MYSQL_PORT = os.getenv('second_hand_mysql_port') or 3306
         self.__engine = create_engine('mysql+mysqldb://{}:{}@{}:{}/{}'
                                       .format(SECOND_HAND_MYSQL_USER,
@@ -110,11 +112,34 @@ class DBStorage:
                 objects.append(obj.to_dict())
         return objects
 
-    def get_favorites(self, user_id) -> List[dict]:
+    def get_user_favorites(self, user_id) -> List[dict]:
         '''This method retrieves an object from the current database session'''
         objects = []
         if user_id:
-            result = self.__session.query(Favorite).filter_by(user_id=user_id).all()
+            result = self.__session.query(Favorite).filter_by(
+                user_id=user_id).all()
             for obj in result:
                 objects.append(self.get(cls=Item, id=obj.item_id).to_dict())
+        return objects
+
+    def get_user_following(self, user_id) -> List[dict]:
+        '''This method retrieves an object from the current database session'''
+        objects = []
+        if user_id:
+            result = self.__session.query(Follower).filter_by(
+                follower_id=user_id).all()
+            for obj in result:
+                objects.append(self.get(
+                    cls=User, id=obj.following_id).to_dict())
+        return objects
+
+    def get_user_followers(self, user_id) -> List[dict]:
+        '''This method retrieves an object from the current database session'''
+        objects = []
+        if user_id:
+            result = self.__session.query(Follower).filter_by(
+                following_id=user_id).all()
+            for obj in result:
+                objects.append(self.get(
+                    cls=User, id=obj.follower_id).to_dict())
         return objects

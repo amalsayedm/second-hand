@@ -82,10 +82,45 @@ favorite2 = Favorite(user_id=11, item_id=2)
 favorite3 = Favorite(user_id=10, item_id=2)
 
 # BaseModel.save_all([favorite1, favorite2])
-BaseModel.save(favorite3)
+# BaseModel.save(favorite3)
 
 # get_user_10= storage.get(User, 10)
 # print(get_user_10.to_dict())
 
-get_user_10_favorites = storage.get_favorites(10)
-print(get_user_10_favorites)
+# get_user_10_favorites = storage.get_favorites(10)
+# print(get_user_10_favorites)
+
+user1 = User(name='hamza', email='hamza@example.com', password='password5', phone_number='1234567890', picture=file_encoded, token='2356')
+user2 = User(name='roka', email='roka@example.com', password='password4', phone_number='0987654321', picture=file_encoded, token='1245')
+
+# BaseModel.save_all([user1, user2])
+hamza = storage.get(User, 14)
+roka = storage.get(User, 15)
+suzan = storage.get(User, 12)
+
+# hamza.following.append(roka)
+# hamza.following.append(suzan)
+# suzan.following.append(roka)
+# storage.save()
+
+hamza = storage.get(User, 14)
+roka = storage.get(User, 15)
+suzan = storage.get(User, 12)
+# print('============hamza===================')
+# print(hamza.to_dict())
+# print('============roka===================')
+# print(roka.to_dict())
+# print('============suzan===================')
+# print(suzan.to_dict())
+
+get_followers = storage.get_user_followers(15)
+print([follower.get('name') for follower in get_followers])
+
+# get_following = storage.get_user_following(14)
+# print(get_following)
+
+# print(suzan.to_dict())
+
+# 
+# print(hamza.to_dict())
+
