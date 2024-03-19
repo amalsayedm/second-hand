@@ -34,7 +34,7 @@ def get_user():
     print("Received token:", token)
     user = storage.getuser_bytoken(token)
     if not user:
-        abort(404)
+        abort(404,description="not avalid user")
     return jsonify(user.to_dict())
 
 @app_views.route('/categories', methods=['GET'], strict_slashes=False)
@@ -52,7 +52,7 @@ def put_user():
     user = storage.getuser_bytoken(token)
 
     if not user:
-        abort(404)
+        abort(404,description="not avalid user")
 
     if not request.get_json():
         abort(400, description="Not a JSON")
@@ -75,12 +75,18 @@ def get_userfavorites():
 
     token = request.headers.get('Authorization')
     user = storage.getuser_bytoken(token)
-    favourites = storage.getuserfavorites(user.id).values()
+    if not user:
+        abort(404,description="not avalid user")
+    favourites = storage.getuserfavorites(user.id)
     return jsonify(favourites)
 
 @app_views.route('/favorites', methods=['POST'], strict_slashes=False)
-def get_userfavorites():
+def add_userfavorites():
 
+    token = request.headers.get('Authorization')
+    user = storage.getuser_bytoken(token)
+    if not user:
+        abort(404,description="not avalid user")
     if not request.get_json():
         abort(400, description="Not a JSON")
 
@@ -92,3 +98,29 @@ def get_userfavorites():
     instance = Favorite(**data)
     instance.save()
     return jsonify(instance.to_dict())
+
+@app_views.route('/favorites', methods=['DELETE'],
+                 strict_slashes=False)
+def delete_favorite():
+    """
+    Deletes an Object
+    """
+    token = request.headers.get('Authorization')
+    user = storage.getuser_bytoken(token)
+
+    if not user:
+        abort(404, description="not a valid user")
+    if not request.get_json():
+        abort(400, description="Not a JSON")
+    if 'id' not in request.get_json():
+        abort(400, description="Missing item id")
+
+    data =request.get_json()
+    id = data.get('id')
+
+
+    status =storage.delete_favourite(item_id=id,user_id=user.id)
+    if status and status == False:
+        return make_response(jsonify({"Item not deleted"}), 400)
+
+    return make_response(jsonify({}), 200)

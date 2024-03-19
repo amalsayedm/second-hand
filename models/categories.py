@@ -2,7 +2,7 @@
 '''this module defines the Category class'''
 
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, LargeBinary
 from sqlalchemy.orm import relationship
 
 
@@ -23,5 +23,4 @@ class Category(BaseModel, Base):
         return {
             'id': self.id,
             'name': self.name,
-
         }

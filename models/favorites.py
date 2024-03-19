@@ -12,8 +12,8 @@ class Favorite(BaseModel, Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey('users.id'))
     item_id = Column(Integer, ForeignKey('items.id'))
-    user = relationship("User", backref="favorites")
-    item = relationship("Item", backref="favorites")
+    user = relationship("User", back_populates="favorites")
+    item = relationship("Item", back_populates="favorites")
 
     def __init__(self, *args, **kwargs):
         '''initializes a favourite'''
