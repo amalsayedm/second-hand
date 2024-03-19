@@ -6,6 +6,7 @@ from flasgger.utils import swag_from
 from models import storage
 from models.user import User
 from models.categories import Category
+from models.favorites import Favorite
 
 @app_views.route('/user', methods=['POST'], strict_slashes=False)
 def add_user():
@@ -27,9 +28,10 @@ def add_user():
     instance.save()
     return make_response(jsonify(instance.to_dict()), 201)
 
-@app_views.route('/user/<token>', methods=['GET'], strict_slashes=False)
-def get_user(token):
-
+@app_views.route('/user', methods=['GET'], strict_slashes=False)
+def get_user():
+    token = request.headers.get('Authorization')
+    print("Received token:", token)
     user = storage.getuser_bytoken(token)
     if not user:
         abort(404)
@@ -41,11 +43,12 @@ def get_categories():
     all_categories = storage.all(Category)
     return jsonify(all_categories)
 
-@app_views.route('/user/<token>', methods=['PUT'], strict_slashes=False)
-def put_user(token):
+@app_views.route('/user', methods=['PUT'], strict_slashes=False)
+def put_user():
     """
     Updates a user
     """
+    token = request.headers.get('Authorization')
     user = storage.getuser_bytoken(token)
 
     if not user:
@@ -54,11 +57,38 @@ def put_user(token):
     if not request.get_json():
         abort(400, description="Not a JSON")
 
-    ignore = ['id']
+    ignore = ['id', 'token']
 
     data = request.get_json()
     for key, value in data.items():
         if key not in ignore:
-            setattr(user, key, value)
+            if key == 'picture':
+                    encoded_data = value.encode('utf-8')
+                    setattr(user, key, encoded_data)
+            else:
+                setattr(user, key, value)
     storage.save()
     return make_response(jsonify(user.to_dict()), 200)
+
+@app_views.route('/favorites', methods=['GET'], strict_slashes=False)
+def get_userfavorites():
+
+    token = request.headers.get('Authorization')
+    user = storage.getuser_bytoken(token)
+    favourites = storage.getuserfavorites(user.id).values()
+    return jsonify(favourites)
+
+@app_views.route('/favorites', methods=['POST'], strict_slashes=False)
+def get_userfavorites():
+
+    if not request.get_json():
+        abort(400, description="Not a JSON")
+
+    if 'user_id' not in request.get_json():
+        abort(400, description="Missing user id")
+    if 'item_id' not in request.get_json():
+        abort(400, description="Missing item_id")
+    data = request.get_json()
+    instance = Favorite(**data)
+    instance.save()
+    return jsonify(instance.to_dict())

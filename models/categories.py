@@ -22,9 +22,6 @@ class Category(BaseModel, Base):
         '''returns a dictionary representation of a Category instance'''
         return {
             'id': self.id,
-<<<<<<< HEAD
             'name': self.name,
-=======
-            'name': self.name
->>>>>>> database
+
         }

@@ -103,18 +103,17 @@ class DBStorage:
     def close(self):
         '''This method closes the current session'''
         self.__session.remove()
-<<<<<<< HEAD
+
     
-    def getuser_bytoken(self,token) -> object:
-=======
+   
 
     def getuser_bytoken(self, token) -> object:
->>>>>>> database
+
         '''This method retrieves an object from the current database session'''
         if token:
             return self.__session.query(User).filter_by(token=token).first()
         return None
-<<<<<<< HEAD
+
     
     # def getItemsbycat(self,cat_id):
     #     results = self.__session.query(Items).filter(cat.type == cat_id).all()
@@ -135,7 +134,7 @@ class DBStorage:
     # def get_userfollowings(self,user_id):
     #     items = self.__session.query(Users).join(followers).filter(followers.user_id == user_id).all()
     #     return (items)
-=======
+
 
     def search_items(self, name) -> List[dict]:
         '''This method retrieves an object from the current database session'''
@@ -186,5 +185,3 @@ class DBStorage:
             for item in items:
                 objects.append(item.to_dict())
         return (objects)
-    
->>>>>>> database

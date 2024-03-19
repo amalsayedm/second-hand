@@ -30,7 +30,6 @@ class User(BaseModel, Base):
 
     def to_dict(self):
         '''returns a dictionary representation of a User instance'''
-
         return {
             'id': self.id,
             'name': self.name,
@@ -40,4 +39,5 @@ class User(BaseModel, Base):
             'token': self.token,
             'followers': [follower.id for follower in self.followers],
             'following': [following.id for following in self.following]
+
         }
