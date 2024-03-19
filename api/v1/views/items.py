@@ -11,7 +11,7 @@ from models.items import Item
 
 
 @app_views.route('/items', methods=['POST'], strict_slashes=False)
-def add_user():
+def add_item():
     """
     Creates an item
     """
@@ -19,21 +19,23 @@ def add_user():
     user = storage.getuser_bytoken(token)
 
     if not user:
-        abort(404,description="not avalid user")
+        abort(400,description="not a valid user")
 
     if not request.get_json():
         abort(400, description="Not a JSON")
 
-    if 'name' or 'description' not in request.get_json():
-        abort(400, description="Missing name or description")
+    if 'name' not in request.get_json():
+        abort(400, description="Missing item name")
+    if 'description' not in request.get_json():
+        abort(400, description="Missing item description")
     if 'price' not in request.get_json():
-        abort(400, description="Missing price")
+        abort(400, description="Missing item price")
     if 'picture' not in request.get_json():
         abort(400, description="Missing item picture")
     if 'category_id' not in request.get_json():
-        abort(400, description="Missing category id")
+        abort(400, description="Missing item category id")
     if 'location_id' not in request.get_json():
-        abort(400, description="Missing Location")
+        abort(400, description="Missing item Location")
    
     data = request.get_json()
     data['user_id'] = user.id
@@ -42,9 +44,9 @@ def add_user():
     return make_response(jsonify(instance.to_dict()), 201)
 
 @app_views.route('/search-items', methods=['GET'], strict_slashes=False)
-def get_item():
+def search_item():
     """
-    Creates an item
+    search an item
     """
     if not request.get_json():
         abort(400, description="Not a JSON")
@@ -54,7 +56,8 @@ def get_item():
     category_id = data.get('category_id')
     search_text = data.get('name')
     result = storage.search_item_with_filters(location_id=location_id,cat_id=category_id,search_text=search_text)
-    return jsonify(result)
+    # Pagination
+    return make_response(jsonify(result), 200)
 
 @app_views.route('/items', methods=['PUT'], strict_slashes=False)
 def put_item():
@@ -65,7 +68,7 @@ def put_item():
     user = storage.getuser_bytoken(token)
 
     if not user:
-        abort(404,description="not avalid user")
+        abort(400,description="not avalid user")
 
     if not request.get_json():
         abort(400, description="Not a JSON")
@@ -75,8 +78,8 @@ def put_item():
     ignore = ['id']
 
     data = request.get_json()
-    id = data.get('id')
-    item =storage.update(cls=Item,id=id,kwargs=data,ignore_items=ignore)
+    id_value = data.get('id')
+    item =storage.update(Item,id_value,ignore_items=ignore,**data)
     return make_response(jsonify(item.to_dict()), 200)
 
 @app_views.route('/items', methods=['DELETE'],
@@ -89,20 +92,50 @@ def delete_item():
     user = storage.getuser_bytoken(token)
 
     if not user:
-        abort(404, description="not a valid user")
+        abort(400, description="not a valid user")
     if not request.get_json():
         abort(400, description="Not a JSON")
-    if 'item_id' not in request.get_json():
+    if 'id' not in request.get_json():
         abort(400, description="Missing item id")
 
     data = request.get_json()
-    id = data.get('item_id')
-    item = storage.get(Item, id)
+    item_id = data.get('id')
+    item = storage.get(Item, item_id)
 
     if not item:
-        abort(404, description="not a valid item")
+        abort(400, description="not a valid item")
 
     storage.delete(item)
     storage.save()
 
     return make_response(jsonify({}), 200)
+
+@app_views.route('/items.by.category/<cat_id>', methods=['GET'], strict_slashes=False)
+def get_items_byCategory(cat_id):
+
+    items = storage.get_items_by_category(cat_id)
+    # Pagination
+    return make_response(jsonify(items), 200)
+
+@app_views.route('/items.by.location/<loc_id>', methods=['GET'], strict_slashes=False)
+def get_items_byLocation(loc_id):
+
+    items = storage.get_items_by_location(loc_id)
+    # Pagination
+    return make_response(jsonify(items), 200)
+
+@app_views.route('/items', methods=['GET'], strict_slashes=False)
+def get_items_byuser():
+    """
+    getitems
+    
+    """
+    token = request.headers.get('Authorization')
+    user = storage.getuser_bytoken(token)
+
+    if not user:
+        abort(400, description="not a valid user")
+    
+    result = storage.getItemsbyuser(user.id)
+    # Pagination
+    return make_response(jsonify(result), 200)

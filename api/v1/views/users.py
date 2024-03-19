@@ -16,8 +16,8 @@ def add_user():
     if not request.get_json():
         abort(400, description="Not a JSON")
 
-    if 'email' not in request.get_json():
-        abort(400, description="Missing user email")
+    if 'email' or 'name' not in request.get_json():
+        abort(400, description="Missing user email or name")
     if 'password' not in request.get_json():
         abort(400, description="Missing user password")
     if 'phone_number' not in request.get_json():
@@ -41,7 +41,7 @@ def get_user():
 def get_categories():
 
     all_categories = storage.all(Category)
-    return jsonify(all_categories)
+    return make_response(jsonify(all_categories), 200)
 
 @app_views.route('/user', methods=['PUT'], strict_slashes=False)
 def put_user():

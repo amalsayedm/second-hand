@@ -84,10 +84,10 @@ class DBStorage:
             return self.__session.query(cls).filter_by(id=id).first()
         return None
 
-    def update(self, cls, id, ignore_items, **kwargs) -> None:
+    def update(self, cls, class_id, ignore_items, **kwargs) -> object:
         '''This method updates an object from the current database session'''
-        if cls and id:
-            obj = self.__session.query(cls).filter_by(id=id).first()
+        if cls and class_id:
+            obj = self.__session.query(cls).filter_by(id=class_id).first()
             if(obj):
                 for key, value in kwargs.items():
                     if key not in ignore_items:
@@ -126,19 +126,13 @@ class DBStorage:
             return self.__session.query(User).filter_by(token=token).first()
         return None
 
-
+    def getItemsbyuser(self,user_id):
+        objects =[]
+        results = self.__session.query(Item).filter(Item.user_id == user_id).all()
+        for item in results:
+                objects.append(item.to_dict())
+        return (objects)
     
-    # def getItemsbycat(self,cat_id):
-    #     results = self.__session.query(Items).filter(cat.type == cat_id).all()
-    #     return (results)
-    
-    # def getItemsbyuser(self,user_id):
-    #     results = self.__session.query(Items).filter(user.id == user_id).all()
-    #     return (results)
-    
-    # def getuserfavorites(self,user_id):
-    #     items = self.__session.query(Items).join(Favorites).filter(Favorites.user_id == user_id).all()
-    #     return (items)
     
     # def getuserfollowers(self,user_id):
     #     items = self.__session.query(Users).join(followers).filter(followers.followind_id == user_id).all()
@@ -210,22 +204,22 @@ class DBStorage:
                 objects.append(item.to_dict())
         return (objects)
 
-    def search_items_by_location(self, name) -> List[dict]:
+    def get_items_by_location(self, loc_id) -> List[dict]:
         '''This method retrieves an object from the current database session'''
         objects = []
-        if name:
+        if loc_id:
             result = self.__session.query(Item).join(Location).filter(
-                Location.name.like('%'+name+'%')).all()
+                Location.id == loc_id).all()
             for obj in result:
                 objects.append(obj.to_dict())
         return objects
 
-    def search_items_by_category(self, name) -> List[dict]:
+    def get_items_by_category(self, cat_id) -> List[dict]:
         '''This method retrieves an object from the current database session'''
         objects = []
-        if name:
+        if cat_id:
             result = self.__session.query(Item).join(Category).filter(
-                Category.name.like('%'+name+'%')).all()
+                Category.id == cat_id ).all()
             for obj in result:
                 objects.append(obj.to_dict())
         return objects
@@ -247,3 +241,13 @@ class DBStorage:
             for obj in result:
                 objects.append(obj.to_dict())
         return objects
+    
+    def delete_favourite(self,item_id, user_id) -> bool:
+        '''This method retrieves an object from the current database session'''
+        if item_id and user_id:
+            obj = self.__session.query(Favorite).filter_by(Favorite.item_id ==item_id , Favorite.user_id == user_id ).first()
+            if obj: 
+                self.delete(obj=obj)
+                return True
+        return False
+    
