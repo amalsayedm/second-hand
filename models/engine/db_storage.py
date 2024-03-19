@@ -10,6 +10,8 @@ from models.categories import Category
 from models.items import Item
 from models.favorites import Favorite
 from models.followers import Follower
+from models.recommendations import Recommendation
+from models.locations import Location
 import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -19,7 +21,10 @@ classes = {
     'Category': Category,
     'Item': Item,
     'Favorite': Favorite,
-    'Follower': Follower
+    'Follower': Follower,
+    'Follower': Follower,
+    'Recommendation': Recommendation,
+    'Location': Location,
 }
 
 
@@ -110,6 +115,16 @@ class DBStorage:
             return self.__session.query(User).filter_by(token=token).first()
         return None
 
+    def get_user_favorites(self, user_id) -> List[dict]:
+        '''This method retrieves an object from the current database session'''
+        objects = []
+        if user_id:
+            items = self.__session.query(Item).join(Favorite).filter(
+                Favorite.user_id == user_id).all()
+            for item in items:
+                objects.append(item.to_dict())
+        return (objects)
+
     def search_items(self, name) -> List[dict]:
         '''This method retrieves an object from the current database session'''
         objects = []
@@ -120,15 +135,6 @@ class DBStorage:
                 objects.append(obj.to_dict())
         return objects
 
-    def get_user_favorites(self, user_id) -> List[dict]:
-        '''This method retrieves an object from the current database session'''
-        objects = []
-        if user_id:
-            result = self.__session.query(Favorite).filter_by(
-                user_id=user_id).all()
-            for obj in result:
-                objects.append(self.get(cls=Item, id=obj.item_id).to_dict())
-        return objects
 
     def get_user_following(self, user_id) -> List[dict]:
         '''This method retrieves an object from the current database session'''
@@ -160,3 +166,32 @@ class DBStorage:
                 objects.append(item.to_dict())
         return (objects)
     
+    def get_user_recommendations(self, user_id) -> List[dict]:
+        '''This method retrieves an object from the current database session'''
+        objects = []
+        if user_id:
+            items = self.__session.query(Item).join(Recommendation).filter(
+                Recommendation.user_id == user_id).all()
+            for item in items:
+                objects.append(item.to_dict())
+        return (objects)
+
+    def search_items_by_location(self, name) -> List[dict]:
+        '''This method retrieves an object from the current database session'''
+        objects = []
+        if name:
+            result = self.__session.query(Item).join(Location).filter(
+                Location.name.like('%'+name+'%')).all()
+            for obj in result:
+                objects.append(obj.to_dict())
+        return objects
+
+    def search_items_by_category(self, name) -> List[dict]:
+        '''This method retrieves an object from the current database session'''
+        objects = []
+        if name:
+            result = self.__session.query(Item).join(Category).filter(
+                Category.name.like('%'+name+'%')).all()
+            for obj in result:
+                objects.append(obj.to_dict())
+        return objects

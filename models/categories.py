@@ -2,7 +2,7 @@
 '''this module defines the Category class'''
 
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, LargeBinary
 from sqlalchemy.orm import relationship
 
 
@@ -11,6 +11,7 @@ class Category(BaseModel, Base):
     __tablename__ = 'categories'
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(128), nullable=False)
+    picture = Column(LargeBinary, nullable=False)
     items = relationship(
         'Item', backref='category', cascade='all, delete-orphan')
 
@@ -22,5 +23,6 @@ class Category(BaseModel, Base):
         '''returns a dictionary representation of a Category instance'''
         return {
             'id': self.id,
-            'name': self.name
+            'name': self.name,
+            'picture': self.picture.decode('utf-8')
         }
