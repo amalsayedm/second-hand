@@ -106,16 +106,6 @@ class DBStorage:
             return self.__session.query(User).filter_by(token=token).first()
         return None
 
-    def search_items(self, name) -> List[dict]:
-        '''This method retrieves an object from the current database session'''
-        objects = []
-        if name:
-            result = self.__session.query(Item).filter(
-                Item.name.like('%'+name+'%')).all()
-            for obj in result:
-                objects.append(obj.to_dict())
-        return objects
-
     def get_user_favorites(self, user_id) -> List[dict]:
         '''This method retrieves an object from the current database session'''
         objects = []
@@ -125,6 +115,16 @@ class DBStorage:
             for item in items:
                 objects.append(item.to_dict())
         return (objects)
+
+    def search_items(self, name) -> List[dict]:
+        '''This method retrieves an object from the current database session'''
+        objects = []
+        if name:
+            result = self.__session.query(Item).filter(
+                Item.name.like('%'+name+'%')).all()
+            for obj in result:
+                objects.append(obj.to_dict())
+        return objects
 
     def get_user_recommendations(self, user_id) -> List[dict]:
         '''This method retrieves an object from the current database session'''
