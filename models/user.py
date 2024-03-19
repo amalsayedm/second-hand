@@ -39,10 +39,7 @@ class User(BaseModel, Base):
             'email': self.email,
             'phone_number': self.phone_number,
             'picture': self.picture,
-            'token': self.token,
-            'favorites': [fav.item_id for fav in self.favorites],
-            'followers': [follower.id for follower in self.followers],
-            'following': [following.id for following in self.following]
+            'token': self.token
         }
 
     def get_user_following(self):

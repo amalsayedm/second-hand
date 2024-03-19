@@ -9,6 +9,7 @@ from models.categories import Category
 from models.items import Item
 from models.favorites import Favorite
 from models.recommendations import Recommendation
+from models.locations import Location
 import base64
 
 '''testing the user class'''
@@ -78,11 +79,11 @@ item2 = Item(name='Laptop', description='Notebook computer', price=1000, picture
 
 # BaseModel.save_all([item1, item2])
 
-favorite1 = Favorite(user_id=10, item_id=1)
-favorite2 = Favorite(user_id=11, item_id=2)
-favorite3 = Favorite(user_id=10, item_id=2)
+favorite1 = Favorite(user_id=14, item_id=1)
+favorite2 = Favorite(user_id=12, item_id=2)
+favorite3 = Favorite(user_id=15, item_id=2)
 
-# BaseModel.save_all([favorite1, favorite2])
+# BaseModel.save_all([favorite1, favorite2, favorite3])
 # BaseModel.save(favorite3)
 
 # get_user_10= storage.get(User, 10)
@@ -140,3 +141,40 @@ recommendation3 = Recommendation(user_id=10, item_id=2)
 user10_recommendations = storage.get_user_recommendations(10)
 user11_recommendations = storage.get_user_recommendations(11)
 print(user11_recommendations)
+
+'''testing  Location'''
+
+location1 = Location(name='Cairo')
+location2 = Location(name='Giza')
+location3 = Location(name='Alexandria')
+location4 = Location(name='Aswan')
+location5 = Location(name='Luxor')
+location6 = Location(name='Hurghada')
+location7 = Location(name='Sharm El Sheikh')
+location8 = Location(name='Dahab')
+location9 = Location(name='Suez')
+location10 = Location(name='Port Said')
+location11 = Location(name='Ismailia')
+location12 = Location(name='Mansoura')
+location13 = Location(name='Tanta')
+
+# BaseModel.save_all([location1, location2, location3, location4, location5, location6, location7, location8, location9, location10, location11, location12, location13])
+
+item1 = Item(name='Phone', description='Smartphone', price=500, picture=file_encoded, size=5, user_id=10, category_id=19, location_id=1)
+item2 = Item(name='Laptop', description='Notebook computer', price=1000, picture=file_encoded, size=15, user_id=11, category_id=20, location_id=2)
+item3 = Item(name='Tablet', description='Tablet computer', price=300, picture=file_encoded, size=10, user_id=12, category_id=19, location_id=3)
+item4 = Item(name='Desktop', description='Desktop computer', price=800, picture=file_encoded, size=20, user_id=13, category_id=20, location_id=4)
+
+# BaseModel.save_all([item1, item2, item3, item4])
+
+get_location_1 = storage.get(Location, 1)
+# print(get_location_1.to_dict())
+
+get_item1 = storage.get(Item, 1)
+# print(get_item1.to_dict())
+
+cairo_items = storage.search_items_by_location('cairo')
+# print(cairo_items)
+
+Mobile_and_Tablets_items = storage.search_items_by_category('Mobile')
+print(Mobile_and_Tablets_items)

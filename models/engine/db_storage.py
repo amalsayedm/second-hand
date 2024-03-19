@@ -11,6 +11,7 @@ from models.items import Item
 from models.favorites import Favorite
 from models.followers import Follower
 from models.recommendations import Recommendation
+from models.locations import Location
 import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -22,6 +23,7 @@ classes = {
     'Favorite': Favorite,
     'Follower': Follower,
     'Recommendation': Recommendation,
+    'Location': Location,
 }
 
 
@@ -133,3 +135,23 @@ class DBStorage:
             for item in items:
                 objects.append(item.to_dict())
         return (objects)
+
+    def search_items_by_location(self, name) -> List[dict]:
+        '''This method retrieves an object from the current database session'''
+        objects = []
+        if name:
+            result = self.__session.query(Item).join(Location).filter(
+                Location.name.like('%'+name+'%')).all()
+            for obj in result:
+                objects.append(obj.to_dict())
+        return objects
+
+    def search_items_by_category(self, name) -> List[dict]:
+        '''This method retrieves an object from the current database session'''
+        objects = []
+        if name:
+            result = self.__session.query(Item).join(Category).filter(
+                Category.name.like('%'+name+'%')).all()
+            for obj in result:
+                objects.append(obj.to_dict())
+        return objects

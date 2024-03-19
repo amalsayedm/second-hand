@@ -18,6 +18,7 @@ class Item(BaseModel, Base):
     size = Column(Integer, nullable=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     category_id = Column(Integer, ForeignKey('categories.id'), nullable=False)
+    location_id = Column(Integer, ForeignKey('locations.id'), nullable=False)
     favorites = relationship("Favorite", back_populates="item")
     recommendations = relationship("Recommendation", back_populates="item")
 
@@ -35,5 +36,6 @@ class Item(BaseModel, Base):
             'picture': self.picture,
             'size': self.size,
             'user_id': self.user_id,
-            'category_id': self.category_id
+            'category_id': self.category_id,
+            'location_id': self.location_id
         }
