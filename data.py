@@ -43,9 +43,9 @@ with open(image, "rb") as image_file:
     file_encoded = base64.b64encode(image_file.read()).decode('utf-8')
 
 '''inserting data to the categories table'''
-category1 = Category(name='Electronics')
-category2 = Category(name='Clothes')
-category3 = Category(name='Books')
+category1 = Category(name='Electronics',picture=file_encoded)
+category2 = Category(name='Clothes',picture=file_encoded)
+category3 = Category(name='Books',picture=file_encoded)
 # category4 = Category(name='Furniture',picture=file_encoded)
 # category7 = Category(name='Accessories',picture=file_encoded)
 # category8 = Category(name='Toys',picture=file_encoded)
@@ -54,20 +54,24 @@ category3 = Category(name='Books')
 # category11 = Category(name='Computers & Accessories',picture=file_encoded)
 
 
-BaseModel.save_all([category1, category2,category3])
+# BaseModel.save_all([category1, category2,category3])
 
-categories = storage.all(Category)
-print(categories)
+# categories = storage.all(Category)
+# print(categories)
 
 '''testing the items class'''
-# image = "yaay.jpg"
-# with open(image, "rb") as image_file:
-#      file_encoded = base64.b64encode(image_file.read()).decode('utf-8')
-# item = Item(name='Samsung tv', description='LG 11', price=11000, picture=file_encoded, user_id=1, category_id=1)
-# BaseModel.save(item)
+image = "yaay.jpg"
+with open(image, "rb") as image_file:
+     file_encoded = base64.b64encode(image_file.read()).decode('utf-8')
+item = Item(name='Samsung tv', description='LG 11', price=11000, picture=file_encoded, user_id=1, category_id=1,location_id=1)
+item2 = Item(name='blue dress', description='blue long woman dress', price=550, picture=file_encoded, user_id=1, category_id=2,location_id=2)
+item3 = Item(name='solasyt 3"rnata', description='best seller book', price=50, picture=file_encoded, user_id=2, category_id=3,location_id=3)
+item4 = Item(name='black coat', description='black defacto coat used twice', price=900, picture=file_encoded, user_id=2, category_id=2,location_id=5)
 
-# all_items = storage.all(Item)
-# print(all_items)
+BaseModel.save_all([item,item2,item3,item4])
+
+all_items = storage.all(Item)
+print(all_items)
 
 # tv_items = storage.search_items('tv')
 # print(tv_items)
@@ -147,22 +151,22 @@ print(categories)
 
 '''testing  Location'''
 
-# location1 = Location(name='Cairo')
-# location2 = Location(name='Giza')
-# location3 = Location(name='Alexandria')
-# location4 = Location(name='Aswan')
-# location5 = Location(name='Luxor')
-# location6 = Location(name='Hurghada')
-# location7 = Location(name='Sharm El Sheikh')
-# location8 = Location(name='Dahab')
-# location9 = Location(name='Suez')
-# location10 = Location(name='Port Said')
-# location11 = Location(name='Ismailia')
-# location12 = Location(name='Mansoura')
-# location13 = Location(name='Tanta')
+location1 = Location(name='Cairo')
+location2 = Location(name='Giza')
+location3 = Location(name='Alexandria')
+location4 = Location(name='Aswan')
+location5 = Location(name='Luxor')
+location6 = Location(name='Hurghada')
+location7 = Location(name='Sharm El Sheikh')
+location8 = Location(name='Dahab')
+location9 = Location(name='Suez')
+location10 = Location(name='Port Said')
+location11 = Location(name='Ismailia')
+location12 = Location(name='Mansoura')
+location13 = Location(name='Tanta')
 
 # BaseModel.save_all([location1, location2, location3, location4, location5, location6, location7, location8, location9, location10, location11, location12, location13])
-print(storage.all(Category))
+# print(storage.all(Location))
 
 # item1 = Item(name='Phone', description='Smartphone', price=500, picture=file_encoded, size=5, user_id=10, category_id=19, location_id=1)
 # item2 = Item(name='Laptop', description='Notebook computer', price=1000, picture=file_encoded, size=15, user_id=11, category_id=20, location_id=2)

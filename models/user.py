@@ -19,6 +19,7 @@ class User(BaseModel, Base):
     phone_number = Column(String(128), nullable=False)
     picture = Column(LargeBinary, nullable=True)
     token = Column(String(128), nullable=False, unique=True)
+    salt = Column(String(128), nullable=False)
     favorites = relationship("Favorite", back_populates="user")
     following = relationship(
         "User", secondary='followers',

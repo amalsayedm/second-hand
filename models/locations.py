@@ -11,7 +11,7 @@ class Location(BaseModel, Base):
     '''This class represents a location'''
     __tablename__ = 'locations'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(128), nullable=False)
+    name = Column(String(128), nullable=False, unique=True)
     items = relationship(
         'Item', backref='location', cascade='all, delete-orphan')
 

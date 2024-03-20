@@ -125,6 +125,13 @@ class DBStorage:
         if token:
             return self.__session.query(User).filter_by(token=token).first()
         return None
+    
+    def finduser_byemail(self, uemail) -> object:
+
+        '''This method retrieves an object from the current database session'''
+        if uemail:
+            return self.__session.query(User).filter(User.email==uemail).first()
+        return None
 
     def getItemsbyuser(self,user_id):
         objects =[]
@@ -245,7 +252,7 @@ class DBStorage:
     def delete_favourite(self,item_id, user_id) -> bool:
         '''This method retrieves an object from the current database session'''
         if item_id and user_id:
-            obj = self.__session.query(Favorite).filter_by(Favorite.item_id ==item_id , Favorite.user_id == user_id ).first()
+            obj = self.__session.query(Favorite).filter(Favorite.item_id ==item_id , Favorite.user_id == user_id ).first()
             if obj: 
                 self.delete(obj=obj)
                 return True
