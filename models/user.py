@@ -14,7 +14,7 @@ class User(BaseModel, Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(128), nullable=False)
-    email = Column(String(128), nullable=False)
+    email = Column(String(128), nullable=False, unique=True)
     password = Column(String(128), nullable=False)
     phone_number = Column(String(128), nullable=False)
     picture = Column(LargeBinary, nullable=True)
@@ -38,7 +38,7 @@ class User(BaseModel, Base):
             'name': self.name,
             'email': self.email,
             'phone_number': self.phone_number,
-            'picture': self.picture.decode('utf-8'),
+            'picture': self.picture.decode('utf-8') if self.picture is not None else None,
             'token': self.token,
 
         }

@@ -43,27 +43,38 @@ with open(image, "rb") as image_file:
     file_encoded = base64.b64encode(image_file.read()).decode('utf-8')
 
 '''inserting data to the categories table'''
-category1 = Category(name='Electronics')
-category2 = Category(name='Clothes')
-category3 = Category(name='Books')
-# category4 = Category(name='Furniture',picture=file_encoded)
-# category7 = Category(name='Accessories',picture=file_encoded)
-# category8 = Category(name='Toys',picture=file_encoded)
-# category9 = Category(name='Others',picture=file_encoded)
-# category10 = Category(name='Mobile and Tablets',picture=file_encoded)
-# category11 = Category(name='Computers & Accessories',picture=file_encoded)
+category1 = Category(name='Electronics', picture=file_encoded)
+category2 = Category(name='Clothes',picture=file_encoded)
+category3 = Category(name='Books',picture=file_encoded)
+category4 = Category(name='Furniture',picture=file_encoded)
+category5 = Category(name='Cars', picture=file_encoded)
+category6 = Category(name='Bikes', picture=file_encoded)
+category7 = Category(name='Accessories',picture=file_encoded)
+category8 = Category(name='Toys',picture=file_encoded)
+category9 = Category(name='Others',picture=file_encoded)
+category10 = Category(name='Mobile and Tablets',picture=file_encoded)
+category11 = Category(name='Computers & Accessories',picture=file_encoded)
+category12 = Category(name='Shoses', picture=file_encoded)
 
 
-BaseModel.save_all([category1, category2,category3])
+# BaseModel.save_all([category1,category2,category3,category4,category5,category6,category7,category8, category9, category10, category11, category12])
 
-categories = storage.all(Category)
-print(categories)
+# categories = storage.all(Category)
+# print(categories)
+
+category13 = Category(name='Shoses', picture=file_encoded)
+
+# try:
+#     BaseModel.save(category13)
+# except:
+#     print('catageory already seted')
+
 
 '''testing the items class'''
-# image = "yaay.jpg"
-# with open(image, "rb") as image_file:
-#      file_encoded = base64.b64encode(image_file.read()).decode('utf-8')
-# item = Item(name='Samsung tv', description='LG 11', price=11000, picture=file_encoded, user_id=1, category_id=1)
+image = "yaay.jpg"
+with open(image, "rb") as image_file:
+     file_encoded = base64.b64encode(image_file.read()).decode('utf-8')
+item = Item(name='Samsung tv', description='LG 11', price=11000, picture=file_encoded, user_id=1, category_id=1, location_id=2)
 # BaseModel.save(item)
 
 # all_items = storage.all(Item)
@@ -77,23 +88,29 @@ print(categories)
 # user2 = User(name='Bob', email='bob@example.com', password='password2', phone_number='0987654321')
 # BaseModel.save_all([user1, user2, category10, category11])
 
-# item1 = Item(name='Phone', description='Smartphone', price=500, picture=file_encoded, size=5, user_id=10, category_id=19)
-# item2 = Item(name='Laptop', description='Notebook computer', price=1000, picture=file_encoded, size=15, user_id=11, category_id=20)
+item1 = Item(name='Phone', description='Smartphone', price=500, picture=file_encoded, size=5, user_id=10, category_id=10, location_id=1)
+item2 = Item(name='Laptop', description='Notebook computer', price=1000, picture=file_encoded, size=15, user_id=11, category_id=11,location_id=4.)
 
-# # BaseModel.save_all([item1, item2])
+# BaseModel.save_all([item1, item2])
 
-# favorite1 = Favorite(user_id=14, item_id=1)
-# favorite2 = Favorite(user_id=12, item_id=2)
-# favorite3 = Favorite(user_id=15, item_id=2)
+favorite1 = Favorite(user_id=14, item_id=1)
+favorite2 = Favorite(user_id=12, item_id=4)
+favorite3 = Favorite(user_id=15, item_id=1)
 
 # BaseModel.save_all([favorite1, favorite2, favorite3])
 # BaseModel.save(favorite3)
 
-# get_user_10= storage.get(User, 10)
+# get_user_10= storage.get(User, 14)
 # print(get_user_10.to_dict())
 
-# get_user_10_favorites = storage.get_user_favorites(10)
+# get_user_10_favorites = storage.getuserfavorites(14)
 # print(get_user_10_favorites)
+
+
+favorite3 = Favorite(user_id=15, item_id=1)
+BaseModel.save(favorite3)
+
+'''testing followers'''
 
 # user1 = User(name='hamza', email='hamza@example.com', password='password5', phone_number='1234567890', picture=file_encoded, token='2356')
 # user2 = User(name='roka', email='roka@example.com', password='password4', phone_number='0987654321', picture=file_encoded, token='1245')
@@ -162,7 +179,7 @@ print(categories)
 # location13 = Location(name='Tanta')
 
 # BaseModel.save_all([location1, location2, location3, location4, location5, location6, location7, location8, location9, location10, location11, location12, location13])
-print(storage.all(Category))
+# print(storage.all(Category))
 
 # item1 = Item(name='Phone', description='Smartphone', price=500, picture=file_encoded, size=5, user_id=10, category_id=19, location_id=1)
 # item2 = Item(name='Laptop', description='Notebook computer', price=1000, picture=file_encoded, size=15, user_id=11, category_id=20, location_id=2)

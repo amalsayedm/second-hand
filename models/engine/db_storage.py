@@ -116,48 +116,12 @@ class DBStorage:
         '''This method closes the current session'''
         self.__session.remove()
 
-    
-   
-
     def getuser_bytoken(self, token) -> object:
 
         '''This method retrieves an object from the current database session'''
         if token:
             return self.__session.query(User).filter_by(token=token).first()
         return None
-
-
-    
-    # def getItemsbycat(self,cat_id):
-    #     results = self.__session.query(Items).filter(cat.type == cat_id).all()
-    #     return (results)
-    
-    # def getItemsbyuser(self,user_id):
-    #     results = self.__session.query(Items).filter(user.id == user_id).all()
-    #     return (results)
-    
-    # def getuserfavorites(self,user_id):
-    #     items = self.__session.query(Items).join(Favorites).filter(Favorites.user_id == user_id).all()
-    #     return (items)
-    
-    # def getuserfollowers(self,user_id):
-    #     items = self.__session.query(Users).join(followers).filter(followers.followind_id == user_id).all()
-    #     return (items)
-
-    # def get_userfollowings(self,user_id):
-    #     items = self.__session.query(Users).join(followers).filter(followers.user_id == user_id).all()
-    #     return (items)
-
-    def get_user_favorites(self, user_id) -> List[dict]:
-        '''This method retrieves an object from the current database session'''
-        objects = []
-        if user_id:
-            items = self.__session.query(Item).join(Favorite).filter(
-                Favorite.user_id == user_id).all()
-            for item in items:
-                objects.append(item.to_dict())
-        return (objects)
-
 
     def search_items(self, name) -> List[dict]:
         '''This method retrieves an object from the current database session'''
@@ -169,30 +133,7 @@ class DBStorage:
                 objects.append(obj.to_dict())
         return objects
 
-
-    def get_user_following(self, user_id) -> List[dict]:
-        '''This method retrieves an object from the current database session'''
-        objects = []
-        if user_id:
-            result = self.__session.query(Follower).filter_by(
-                follower_id=user_id).all()
-            for obj in result:
-                objects.append(self.get(
-                    cls=User, id=obj.following_id).to_dict())
-        return objects
-
-    def get_user_followers(self, user_id) -> List[dict]:
-        '''This method retrieves an object from the current database session'''
-        objects = []
-        if user_id:
-            result = self.__session.query(Follower).filter_by(
-                following_id=user_id).all()
-            for obj in result:
-                objects.append(self.get(
-                    cls=User, id=obj.follower_id).to_dict())
-        return objects
-
-    def getuserfavorites(self,user_id):
+    def getuserfavorites(self,user_id) -> List[dict]:
         objects = []
         if user_id:
             items = self.__session.query(Item).join(Favorite).filter(Favorite.user_id == user_id).all()

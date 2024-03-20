@@ -2,7 +2,7 @@
 '''this module defines the Recommendation class'''
 
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 
@@ -14,6 +14,10 @@ class Recommendation(BaseModel, Base):
     item_id = Column(Integer, ForeignKey('items.id'), nullable=False)
     user = relationship("User", back_populates="recommendations")
     item = relationship("Item", back_populates="recommendations")
+
+    __table_args__ = (
+        UniqueConstraint('user_id', 'item_id', name='unique_user_item'),
+    )
 
     def __init__(self, *args, **kwargs):
         '''initializes a recommendation'''

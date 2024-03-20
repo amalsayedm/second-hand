@@ -10,7 +10,8 @@ class Category(BaseModel, Base):
     '''This class represents a category'''
     __tablename__ = 'categories'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(128), nullable=False)
+    name = Column(String(128), nullable=False, unique=True)
+    picture = Column(LargeBinary, nullable=False)
     items = relationship(
         'Item', backref='category', cascade='all, delete-orphan')
 
@@ -23,4 +24,5 @@ class Category(BaseModel, Base):
         return {
             'id': self.id,
             'name': self.name,
+            'picture': self.picture.decode('utf-8'),
         }
