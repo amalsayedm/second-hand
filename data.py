@@ -93,9 +93,9 @@ item2 = Item(name='Laptop', description='Notebook computer', price=1000, picture
 
 # BaseModel.save_all([item1, item2])
 
-favorite1 = Favorite(user_id=14, item_id=1)
-favorite2 = Favorite(user_id=12, item_id=4)
-favorite3 = Favorite(user_id=15, item_id=1)
+# favorite1 = Favorite(user_id=14, item_id=1)
+# favorite2 = Favorite(user_id=12, item_id=4)
+# favorite3 = Favorite(user_id=15, item_id=1)
 
 # BaseModel.save_all([favorite1, favorite2, favorite3])
 # BaseModel.save(favorite3)
@@ -107,8 +107,11 @@ favorite3 = Favorite(user_id=15, item_id=1)
 # print(get_user_10_favorites)
 
 
-favorite3 = Favorite(user_id=15, item_id=1)
-BaseModel.save(favorite3)
+# favorite3 = Favorite(user_id=15, item_id=1)
+# BaseModel.save(favorite3)
+
+# favorite4 = Favorite(user_id=10, item_id=1)
+# BaseModel.save(favorite4)
 
 '''testing followers'''
 
@@ -116,9 +119,9 @@ BaseModel.save(favorite3)
 # user2 = User(name='roka', email='roka@example.com', password='password4', phone_number='0987654321', picture=file_encoded, token='1245')
 
 # # BaseModel.save_all([user1, user2])
-# hamza = storage.get(User, 14)
-# roka = storage.get(User, 15)
-# suzan = storage.get(User, 12)
+hamza = storage.get(User, 14)
+roka = storage.get(User, 15)
+suzan = storage.get(User, 12)
 
 # hamza.following.append(roka)
 # hamza.following.append(suzan)
@@ -153,11 +156,11 @@ BaseModel.save(favorite3)
 # '''testing recommendations'''
 
 # recommendation1 = Recommendation(user_id=10, item_id=1)
-# recommendation2 = Recommendation(user_id=11, item_id=2)
-# recommendation3 = Recommendation(user_id=10, item_id=2)
+# recommendation2 = Recommendation(user_id=11, item_id=4)
+recommendation3 = Recommendation(user_id=10, item_id=5)
 
-# # BaseModel.save_all([recommendation1, recommendation2, recommendation3])
-
+# BaseModel.save_all([recommendation1, recommendation2, recommendation3])
+BaseModel.save(recommendation3)
 # user10_recommendations = storage.get_user_recommendations(10)
 # user11_recommendations = storage.get_user_recommendations(11)
 # print(user11_recommendations)
