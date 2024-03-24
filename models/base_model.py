@@ -25,8 +25,12 @@ class BaseModel:
 
     def save(self):
         '''This method saves the instance to the database'''
-        models.storage.new(self)
-        models.storage.save()
+        try:
+            models.storage.new(self)
+            models.storage.save()
+            return True
+        except:
+            return False
 
     @classmethod
     def save_all(self, objects: list):
