@@ -3,6 +3,7 @@
 from api.v1.views import app_views
 from flask import abort, jsonify, make_response, request
 from flasgger.utils import swag_from
+import uuid
 from models import storage
 from models.user import User
 from models.categories import Category
@@ -38,10 +39,12 @@ def add_user():
     encrypted_password = request.json.get('password')
 
     password_hash = generate_password_hash( encrypted_password+ salt)
-
+    random_uuid = uuid.uuid4()
+    random_token = str(random_uuid)
     data = request.get_json()
     data['password'] = password_hash
     data['salt'] = salt
+    data['token'] = random_token
 
     instance = User(**data)
     instance.save()

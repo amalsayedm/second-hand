@@ -68,10 +68,10 @@ item2 = Item(name='blue dress', description='blue long woman dress', price=550, 
 item3 = Item(name='solasyt 3"rnata', description='best seller book', price=50, picture=file_encoded, user_id=2, category_id=3,location_id=3)
 item4 = Item(name='black coat', description='black defacto coat used twice', price=900, picture=file_encoded, user_id=2, category_id=2,location_id=5)
 
-BaseModel.save_all([item,item2,item3,item4])
+# BaseModel.save_all([item,item2,item3,item4])
 
-all_items = storage.all(Item)
-print(all_items)
+# all_items = storage.all(Item)
+# print(all_items)
 
 # tv_items = storage.search_items('tv')
 # print(tv_items)
@@ -102,19 +102,18 @@ print(all_items)
 # user1 = User(name='hamza', email='hamza@example.com', password='password5', phone_number='1234567890', picture=file_encoded, token='2356')
 # user2 = User(name='roka', email='roka@example.com', password='password4', phone_number='0987654321', picture=file_encoded, token='1245')
 
-# # BaseModel.save_all([user1, user2])
-# hamza = storage.get(User, 14)
-# roka = storage.get(User, 15)
+# BaseModel.save_all([user1, user2])
+mihre = storage.get(User, 1)
+amal = storage.get(User, 2)
 # suzan = storage.get(User, 12)
 
-# hamza.following.append(roka)
+# amal.following.append(mihre)
 # hamza.following.append(suzan)
 # suzan.following.append(roka)
 # storage.save()
 
 # hamza = storage.get(User, 14)
-# # print(hamza.get_user_following())
-# print(hamza.get_user_followers())
+print(amal.get_user_following())
 # roka = storage.get(User, 15)
 # print(roka.get_user_following())
 # print(roka.get_user_followers())

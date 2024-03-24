@@ -6,7 +6,7 @@ import base64
 
 
 
-url = "http://0.0.0.0:5000/api/v1/favorites"
+url = "http://0.0.0.0:5000/api/v1/user"
 
 
 
@@ -17,12 +17,11 @@ with open(image, "rb") as image_file:
     # "password": "56789",
 
 payload_user = {
-    "email": "mihre@gmail.com",
-    "name": "mihre",
+    "email": "khalid@gmail.com",
+    "name": "khalid",
     "phone_number": "0123456789",
     "picture": file_encoded,
-    "token": "amal123456",
-    "password": "56789",
+    "password": "khaid123456",
 
 }
 payload_user_login= {
@@ -46,6 +45,11 @@ payload_add_fav = {
     "user_id":1,
     "item_id":4
 }
+payload_add_follow = {
+    
+    
+    "user_followed_id":2
+}
 payload_item_update = {
     
     "description": "a defacto black coat",
@@ -61,11 +65,11 @@ token = 'mihre56788'
 # token ='amal123456'
 headers = {
     "Content-Type": "application/json",
-    "Authorization": f'{token}',
+    # "Authorization": f'{token}',
 }
 
-# response = requests.delete(url,data=json.dumps(payload_add_fav),headers=headers)
-response = requests.get(url,headers=headers)
+response = requests.post(url,data=json.dumps(payload_user),headers=headers)
+# response = requests.get(url,headers=headers)
 
 
 # url = "http://0.0.0.0:5000/api/v1/categories"
