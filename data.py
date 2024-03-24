@@ -10,7 +10,7 @@ from models.base_model  import BaseModel
 from models.categories import Category
 from models.items import Item
 from models.favorites import Favorite
-from models.recommendations import Recommendation
+from models.search import Search
 from models.locations import Location
 import base64
 
@@ -68,10 +68,10 @@ item2 = Item(name='blue dress', description='blue long woman dress', price=550, 
 item3 = Item(name='solasyt 3"rnata', description='best seller book', price=50, picture=file_encoded, user_id=2, category_id=3,location_id=3)
 item4 = Item(name='black coat', description='black defacto coat used twice', price=900, picture=file_encoded, user_id=2, category_id=2,location_id=5)
 
-BaseModel.save_all([item,item2,item3,item4])
+# BaseModel.save_all([item,item2,item3,item4])
 
-all_items = storage.all(Item)
-print(all_items)
+# all_items = storage.all(Item)
+# print(all_items)
 
 # tv_items = storage.search_items('tv')
 # print(tv_items)
@@ -81,14 +81,14 @@ print(all_items)
 # user2 = User(name='Bob', email='bob@example.com', password='password2', phone_number='0987654321')
 # BaseModel.save_all([user1, user2, category10, category11])
 
-item1 = Item(name='Phone', description='Smartphone', price=500, picture=file_encoded, size=5, user_id=10, category_id=10, location_id=1)
-item2 = Item(name='Laptop', description='Notebook computer', price=1000, picture=file_encoded, size=15, user_id=11, category_id=11,location_id=4.)
+item1 = Item(name='Phone', description='Smartphone', price=500, picture=file_encoded, size=5, user_id=2, category_id=10, location_id=1)
+item2 = Item(name='Laptop', description='Notebook computer', price=1000, picture=file_encoded, size=15, user_id=1, category_id=11,location_id=4.)
 
 # BaseModel.save_all([item1, item2])
 
-# favorite1 = Favorite(user_id=14, item_id=1)
-# favorite2 = Favorite(user_id=12, item_id=4)
-# favorite3 = Favorite(user_id=15, item_id=1)
+favorite1 = Favorite(user_id=1, item_id=3)
+favorite2 = Favorite(user_id=2, item_id=4)
+favorite3 = Favorite(user_id=1, item_id=9)
 
 # BaseModel.save_all([favorite1, favorite2, favorite3])
 # BaseModel.save(favorite3)
@@ -108,17 +108,15 @@ item2 = Item(name='Laptop', description='Notebook computer', price=1000, picture
 
 '''testing followers'''
 
-# user1 = User(name='hamza', email='hamza@example.com', password='password5', phone_number='1234567890', picture=file_encoded, token='2356')
-# user2 = User(name='roka', email='roka@example.com', password='password4', phone_number='0987654321', picture=file_encoded, token='1245')
+user1 = User(name='hamza', email='hamza@example.com', password='password5', phone_number='1234567890', picture=file_encoded, token='2356', salt='1234')
+user2 = User(name='roka', email='roka@example.com', password='password4', phone_number='0987654321', picture=file_encoded, token='1245', salt='1234')
 
-# # BaseModel.save_all([user1, user2])
-hamza = storage.get(User, 14)
-roka = storage.get(User, 15)
-suzan = storage.get(User, 12)
+# BaseModel.save_all([user1, user2])
+hamza = storage.get(User, 1)
+roka = storage.get(User, 2)
+
 
 # hamza.following.append(roka)
-# hamza.following.append(suzan)
-# suzan.following.append(roka)
 # storage.save()
 
 # hamza = storage.get(User, 14)
@@ -146,17 +144,6 @@ suzan = storage.get(User, 12)
 # 
 # print(hamza.to_dict())
 
-# '''testing recommendations'''
-
-# recommendation1 = Recommendation(user_id=10, item_id=1)
-# recommendation2 = Recommendation(user_id=11, item_id=4)
-recommendation3 = Recommendation(user_id=10, item_id=5)
-
-# BaseModel.save_all([recommendation1, recommendation2, recommendation3])
-BaseModel.save(recommendation3)
-# user10_recommendations = storage.get_user_recommendations(10)
-# user11_recommendations = storage.get_user_recommendations(11)
-# print(user11_recommendations)
 
 '''testing  Location'''
 
@@ -195,3 +182,15 @@ location13 = Location(name='Tanta')
 
 # Mobile_and_Tablets_items = storage.search_items_by_category('Mobile')
 # print(Mobile_and_Tablets_items)
+
+'''testing search'''
+search1 = Search(user_id=1, name='phone')
+search2 = Search(user_id=2, name='dress')
+search3 = Search(user_id=2, name='book')
+
+# BaseModel.save_all([search1, search2, search3])
+
+get_search_by_user_id_2 = storage.get_searches_by_user(2)
+
+print(get_search_by_user_id_2)
+

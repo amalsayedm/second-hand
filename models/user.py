@@ -6,7 +6,7 @@ from sqlalchemy import Column, Integer, String, LargeBinary
 from sqlalchemy.orm import relationship
 from models.favorites import Favorite
 from models.followers import Follower
-from models.recommendations import Recommendation
+from models.search import Search
 
 
 class User(BaseModel, Base):
@@ -21,12 +21,12 @@ class User(BaseModel, Base):
     token = Column(String(128), nullable=False, unique=True)
     salt = Column(String(128), nullable=False)
     favorites = relationship("Favorite", back_populates="user")
+    searches = relationship("Search", back_populates="user")
     following = relationship(
         "User", secondary='followers',
         primaryjoin=id == Follower.follower_id,
         secondaryjoin=id == Follower.following_id,
         backref="followers")
-    recommendations = relationship("Recommendation", back_populates="user")
 
     def __init__(self, *args, **kwargs):
         '''initializes a user'''

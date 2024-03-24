@@ -20,7 +20,6 @@ class Item(BaseModel, Base):
     category_id = Column(Integer, ForeignKey('categories.id'), nullable=False)
     location_id = Column(Integer, ForeignKey('locations.id'), nullable=False)
     favorites = relationship("Favorite", back_populates="item")
-    recommendations = relationship("Recommendation", back_populates="item")
 
 
     def __init__(self, *args, **kwargs):

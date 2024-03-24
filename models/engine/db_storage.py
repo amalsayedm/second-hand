@@ -10,7 +10,7 @@ from models.categories import Category
 from models.items import Item
 from models.favorites import Favorite
 from models.followers import Follower
-from models.recommendations import Recommendation
+from models.search import Search
 from models.locations import Location
 import sqlalchemy
 from sqlalchemy import create_engine
@@ -23,7 +23,7 @@ classes = {
     'Favorite': Favorite,
     'Follower': Follower,
     'Follower': Follower,
-    'Recommendation': Recommendation,
+    'Search': Search,
     'Location': Location,
 }
 
@@ -137,15 +137,6 @@ class DBStorage:
                 objects.append(item.to_dict())
         return (objects)
     
-    
-    # def getuserfollowers(self,user_id):
-    #     items = self.__session.query(Users).join(followers).filter(followers.followind_id == user_id).all()
-    #     return (items)
-
-    # def get_userfollowings(self,user_id):
-    #     items = self.__session.query(Users).join(followers).filter(followers.user_id == user_id).all()
-    #     return (items)
-
     def get_user_favorites(self, user_id) -> List[dict]:
         '''This method retrieves an object from the current database session'''
         objects = []
@@ -155,7 +146,6 @@ class DBStorage:
             for item in items:
                 objects.append(item.to_dict())
         return (objects)
-
 
     def search_items(self, name) -> List[dict]:
         '''This method retrieves an object from the current database session'''
@@ -175,16 +165,6 @@ class DBStorage:
                 objects.append(item.to_dict())
         return (objects)
     
-    def get_user_recommendations(self, user_id) -> List[dict]:
-        '''This method retrieves an object from the current database session'''
-        objects = []
-        if user_id:
-            items = self.__session.query(Item).join(Recommendation).filter(
-                Recommendation.user_id == user_id).all()
-            for item in items:
-                objects.append(item.to_dict())
-        return (objects)
-
     def get_items_by_location(self, loc_id) -> List[dict]:
         '''This method retrieves an object from the current database session'''
         objects = []
@@ -232,3 +212,13 @@ class DBStorage:
                 return True
         return False
     
+    def get_searches_by_user(self, user_id) -> List[dict]:
+        '''This method retrieves an object from the current database session'''
+        objects = []
+        if user_id:
+            searches = self.__session.query(Search).filter(
+                Search.user_id == user_id).all()
+            for search in searches:
+                objects.append(search.to_dict()['name'])
+        return objects
+
