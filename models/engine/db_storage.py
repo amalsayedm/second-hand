@@ -222,3 +222,8 @@ class DBStorage:
                 objects.append(search.to_dict()['name'])
         return objects
 
+    def get_item_id(self, name, description) -> int:
+        '''This method retrieves an object from the current database session'''
+        if name and description:
+            return self.__session.query(Item).filter(Item.name == name, Item.description == description).first().id
+        return None

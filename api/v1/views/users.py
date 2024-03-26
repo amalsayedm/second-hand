@@ -7,6 +7,7 @@ from models import storage
 from models.user import User
 from models.categories import Category
 from models.favorites import Favorite
+from models.base_model import BaseModel
 import secrets
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -44,7 +45,8 @@ def add_user():
     data['salt'] = salt
 
     instance = User(**data)
-    instance.save()
+    # instance.save()
+    BaseModel.save(instance)
     return make_response(jsonify(instance.to_dict()), 201)
 
 @app_views.route('/user', methods=['GET'], strict_slashes=False)

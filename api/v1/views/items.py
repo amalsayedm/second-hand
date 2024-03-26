@@ -8,6 +8,8 @@ from models.user import User
 from models.categories import Category
 from models.favorites import Favorite
 from models.items import Item
+from models.search import Search
+from models.base_model import BaseModel
 
 
 @app_views.route('/items', methods=['POST'], strict_slashes=False)
@@ -40,7 +42,8 @@ def add_item():
     data = request.get_json()
     data['user_id'] = user.id
     instance = Item(**data)
-    instance.save()
+    # instance.save()
+    BaseModel.save(instance)
     return make_response(jsonify(instance.to_dict()), 201)
 
 @app_views.route('/search-items', methods=['GET'], strict_slashes=False)
@@ -56,6 +59,12 @@ def search_item():
     category_id = data.get('category_id')
     search_text = data.get('name')
     result = storage.search_item_with_filters(location_id=location_id,cat_id=category_id,search_text=search_text)
+    if search_text:
+        token = request.headers.get('Authorization')
+        user = storage.getuser_bytoken(token).to_dict()
+        if user:
+            searched = Search(user_id=user['id'], name=search_text)
+            BaseModel.save(searched)
     # Pagination
     return make_response(jsonify(result), 200)
 
@@ -105,8 +114,9 @@ def delete_item():
     if not item:
         abort(400, description="not a valid item")
 
-    storage.delete(item)
-    storage.save()
+    # storage.delete(item)
+    # storage.save()
+    BaseModel.delete(item)
 
     return make_response(jsonify({}), 200)
 

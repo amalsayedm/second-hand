@@ -13,6 +13,7 @@ from models.favorites import Favorite
 from models.search import Search
 from models.locations import Location
 import base64
+from recommendation.recommendation import get_recommendations
 
 '''testing the user class'''
 # image = Image.open('./yaay.jpg')
@@ -92,6 +93,9 @@ favorite3 = Favorite(user_id=1, item_id=9)
 
 # BaseModel.save_all([favorite1, favorite2, favorite3])
 # BaseModel.save(favorite3)
+
+# favorite4 = Favorite(user_id=2, item_id=3)
+# BaseModel.save(favorite4)
 
 # get_user_10= storage.get(User, 14)
 # print(get_user_10.to_dict())
@@ -192,5 +196,14 @@ search3 = Search(user_id=2, name='book')
 
 get_search_by_user_id_2 = storage.get_searches_by_user(2)
 
-print(get_search_by_user_id_2)
+# print(get_search_by_user_id_2)
+
+user2_recommendations = get_recommendations(2)
+print(user2_recommendations)
+
+# all_items = storage.all(Item)
+# print(all_items.values())
+
+# get_item = storage.get(Item, 2)
+# print(get_item.category.name)
 
