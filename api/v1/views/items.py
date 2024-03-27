@@ -72,7 +72,7 @@ def search_item():
 @app_views.route('/items', methods=['PUT'], strict_slashes=False)
 def put_item():
     """
-    Updates a user
+    Updates a item
     """
     token = request.headers.get('Authorization')
     user = storage.getuser_bytoken(token)
