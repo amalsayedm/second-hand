@@ -51,6 +51,9 @@ def search_item():
     """
     search an item
     """
+    token = request.headers.get('Authorization')
+    user = storage.getuser_bytoken(token).to_dict()
+
     if not request.get_json():
         abort(400, description="Not a JSON")
    
@@ -60,8 +63,6 @@ def search_item():
     search_text = data.get('name')
     result = storage.search_item_with_filters(location_id=location_id,cat_id=category_id,search_text=search_text)
     if search_text:
-        token = request.headers.get('Authorization')
-        user = storage.getuser_bytoken(token).to_dict()
         if user:
             searched = Search(user_id=user['id'], name=search_text)
             BaseModel.save(searched)
