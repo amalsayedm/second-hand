@@ -227,3 +227,11 @@ class DBStorage:
         if name and description:
             return self.__session.query(Item).filter(Item.name == name, Item.description == description).first().id
         return None
+    
+    def get_most_recent_items(self) -> List[dict]:
+        '''This method retrieves an object from the current database session'''
+        objects = []
+        result = self.__session.query(Item).order_by(Item.id.desc()).limit(15).all()
+        for obj in result:
+            objects.append(obj.to_dict())
+        return objects

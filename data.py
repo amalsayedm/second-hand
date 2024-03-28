@@ -198,7 +198,10 @@ get_search_by_user_id_2 = storage.get_searches_by_user(2)
 
 # print(get_search_by_user_id_2)
 
-user2_recommendations = get_recommendations(2)
+user3 = User(name='zoma', email='zoma@example.com', password='password5', phone_number='1234567890', picture=file_encoded, token='236', salt='134')
+# BaseModel.save(user3)
+
+user2_recommendations = get_recommendations(3)
 print(user2_recommendations)
 
 # all_items = storage.all(Item)
