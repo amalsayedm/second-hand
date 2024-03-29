@@ -75,13 +75,7 @@ def user_login():
         return jsonify({'message': 'Login successful'}), 200
     else:
         return jsonify({'error': 'Incorrect password'}), 401
-    
 
-@app_views.route('/categories', methods=['GET'], strict_slashes=False)
-def get_categories():
-
-    all_categories = storage.all(Category)
-    return make_response(jsonify(all_categories), 200)
 
 @app_views.route('/user', methods=['PUT'], strict_slashes=False)
 def put_user():
