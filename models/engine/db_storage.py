@@ -115,6 +115,13 @@ class DBStorage:
     def close(self):
         '''This method closes the current session'''
         self.__session.remove()
+        
+    def count(self, cls: object) -> int:
+        """
+        count the number of objects in storage
+        """
+        count = len(models.storage.all(cls))
+        return count
 
     def getuser_bytoken(self, token) -> object:
 
@@ -222,16 +229,21 @@ class DBStorage:
                 objects.append(search.to_dict()['name'])
         return objects
 
-    def get_item_id(self, name, description) -> int:
-        '''This method retrieves an object from the current database session'''
-        if name and description:
-            return self.__session.query(Item).filter(Item.name == name, Item.description == description).first().id
-        return None
-    
-    def get_most_recent_items(self) -> List[dict]:
+    def get_items(self, name, description) -> List[dict]:
         '''This method retrieves an object from the current database session'''
         objects = []
-        result = self.__session.query(Item).order_by(Item.id.desc()).limit(15).all()
+        if name and description:
+            items = self.__session.query(Item).filter(Item.name == name, Item.description == description).all()
+            for item in items:
+                objects.append(item.to_dict())
+        return objects
+    
+    def get_most_recent_items(self, page: int, per_page: int) -> List[dict]:
+        '''This method retrieves an object from the current database session'''
+        start = (page - 1) * per_page
+        end = start + per_page
+        objects = []
+        result = self.__session.query(Item).order_by(Item.id.desc()).offset(start).limit(per_page).all()
         for obj in result:
             objects.append(obj.to_dict())
         return objects

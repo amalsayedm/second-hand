@@ -5,6 +5,7 @@ from models.base_model import BaseModel, Base
 from sqlalchemy import Column, Integer, String, ForeignKey, LargeBinary
 from sqlalchemy.orm import relationship
 from models.favorites import Favorite
+from models.user import User
 
 
 class Item(BaseModel, Base):
@@ -28,6 +29,10 @@ class Item(BaseModel, Base):
 
     def to_dict(self):
         '''returns a dictionary representation of an Item instance'''
+        from models import storage
+        user = storage.get(User, self.user_id)
+        phone_number = user.phone_number if user else None
+
         return {
             'id': self.id,
             'name': self.name,
@@ -37,5 +42,6 @@ class Item(BaseModel, Base):
             'size': self.size,
             'user_id': self.user_id,
             'category_id': self.category_id,
-            'location_id': self.location_id
+            'location_id': self.location_id,
+            'contact' : phone_number
         }

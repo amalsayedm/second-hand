@@ -82,10 +82,10 @@ item4 = Item(name='black coat', description='black defacto coat used twice', pri
 # user2 = User(name='Bob', email='bob@example.com', password='password2', phone_number='0987654321')
 # BaseModel.save_all([user1, user2, category10, category11])
 
-item1 = Item(name='Phone', description='Smartphone', price=500, picture=file_encoded, size=5, user_id=2, category_id=10, location_id=1)
-item2 = Item(name='Laptop', description='Notebook computer', price=1000, picture=file_encoded, size=15, user_id=1, category_id=11,location_id=4.)
+item1 = Item(name='black pants', description='bangi black pants', price=500, picture=file_encoded, size=5, user_id=2, category_id=2, location_id=1)
+item2 = Item(name='red dress', description='long sleeves red dress', price=1000, picture=file_encoded, size=15, user_id=1, category_id=2,location_id=4.)
 
-# BaseModel.save_all([item1, item2])
+BaseModel.save_all([item1, item2])
 
 favorite1 = Favorite(user_id=1, item_id=3)
 favorite2 = Favorite(user_id=2, item_id=4)
@@ -202,7 +202,7 @@ user3 = User(name='zoma', email='zoma@example.com', password='password5', phone_
 # BaseModel.save(user3)
 
 user2_recommendations = get_recommendations(3)
-print(user2_recommendations)
+# print(user2_recommendations)
 
 # all_items = storage.all(Item)
 # print(all_items.values())

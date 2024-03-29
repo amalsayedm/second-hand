@@ -37,9 +37,9 @@ def get_recommendations(user_id):
         except Exception:
             continue
 
-    items_ids = []
+    items = []
     for item in recommended_items:
         name, description = item.split(':')
-        item_id = storage.get_item_id(name, description)
-        items_ids.append(item_id)
-    return items_ids
+        item = storage.get_items(name, description)
+        items = items + item
+    return items[:10]
