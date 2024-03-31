@@ -15,7 +15,7 @@ from recommendation.recommendation import get_recommendations
 from helpers import save_image
 from flask import send_from_directory
 
-dir = os.path.expanduser("~/alx/second-hand/images/items")
+dir = os.path.expanduser("/home/second2hand/mysite/images/items")
 
 @app_views.route('/items', methods=['POST'], strict_slashes=False)
 def add_item():
@@ -43,14 +43,12 @@ def add_item():
         abort(400, description="Missing item category id")
     if 'location_id' not in request.get_json():
         abort(400, description="Missing item Location")
-   
+
     data = request.get_json()
     data['user_id'] = user.id
     data['picture'] = save_image(data, dir)
-    
     instance = Item(**data)
-    # instance.save()
-    BaseModel.save(instance)
+    instance.save()
     return make_response(jsonify(instance.to_dict()), 201)
 
 @app_views.route('/search-items', methods=['GET'], strict_slashes=False)
@@ -63,10 +61,10 @@ def search_item():
 
     if not request.get_json():
         abort(400, description="Not a JSON")
-    
+
     page = request.args.get('page', 1, type=int)
     per_page = 10
-    
+
     data = request.get_json()
     location_id = data.get('location_id')
     category_id = data.get('category_id')
@@ -81,10 +79,11 @@ def search_item():
             BaseModel.save(searched)
     return make_response(jsonify({'items': items, 'next_page': next_page}), 200)
 
+
 @app_views.route('/items', methods=['PUT'], strict_slashes=False)
 def put_item():
     """
-    Updates a item
+    Updates a user
     """
     token = request.headers.get('Authorization')
     user = storage.getuser_bytoken(token)
@@ -129,9 +128,8 @@ def delete_item():
     if not item:
         abort(400, description="not a valid item")
 
-    # storage.delete(item)
-    # storage.save()
-    BaseModel.delete(item)
+    storage.delete(item)
+    storage.save()
 
     return make_response(jsonify({}), 200)
 
@@ -147,6 +145,7 @@ def get_items_byCategory(cat_id):
 
 @app_views.route('/items.by.location/<loc_id>', methods=['GET'], strict_slashes=False)
 def get_items_byLocation(loc_id):
+    """items by location"""
     page = request.args.get('page', 1, type=int)
     per_page = 10
     total_pages = (storage.count_items_by_location(loc_id) + per_page - 1) // per_page
@@ -158,14 +157,14 @@ def get_items_byLocation(loc_id):
 def get_items_byuser():
     """
     getitems
-    
+
     """
     token = request.headers.get('Authorization')
     user = storage.getuser_bytoken(token)
 
     if not user:
         abort(400, description="not a valid user")
-    
+
     page = request.args.get('page', 1, type=int)
     per_page = 10
     total_pages = (storage.count_items_by_user(user.id) + per_page - 1) // per_page
@@ -180,7 +179,7 @@ def load_items():
     user = storage.getuser_bytoken(token)
     if not user:
         abort(400,description="not a valid user")
-        
+
     page = request.args.get('page', 1, type=int)
     per_page = 10
 

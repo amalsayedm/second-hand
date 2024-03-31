@@ -16,13 +16,13 @@ def add_follow_recored():
     user = storage.getuser_bytoken(token)
     if not user:
         abort(400,description="not a valid user")
-    
+
     if not request.get_json():
         abort(400, description="Not a JSON")
 
     if 'user_followed_id' not in request.get_json():
         abort(400, description="Missing id of the user to be followed")
-    
+
     id=request.json.get('user_followed_id')
     user_to_be_followed=storage.get(User,id)
     user.following.append(user_to_be_followed)
@@ -40,13 +40,13 @@ def remove_follow_recored():
     user = storage.getuser_bytoken(token)
     if not user:
         abort(400,description="not a valid user")
-    
+
     if not request.get_json():
         abort(400, description="Not a JSON")
 
     if 'user_followed_id' not in request.get_json():
         abort(400, description="Missing id of the user to be unfollowed")
-    
+
     id=request.json.get('user_followed_id')
     user_to_be_unfollowed=storage.get(User,id)
     user.following.remove(user_to_be_unfollowed)
@@ -64,7 +64,7 @@ def get_followers():
     user = storage.getuser_bytoken(token)
     if not user:
         abort(400,description="not a valid user")
-    
+
     followers=user.get_user_followers()
     return make_response(jsonify(followers), 200)
 
@@ -77,6 +77,6 @@ def get_following():
     user = storage.getuser_bytoken(token)
     if not user:
         abort(400,description="not a valid user")
-    
+
     following=user.get_user_following()
     return make_response(jsonify(following), 200)

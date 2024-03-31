@@ -34,10 +34,10 @@ class DBStorage:
     __engine = None
     __session = None
 
-    _mysql_user = 'second_hand'
-    _mysql_pwd =  'Second_hand_pwd1'
-    _mysql_host = 'localhost'
-    _mysql_db = 'second_hand'
+    _mysql_user = 'second2hand'
+    _mysql_pwd =  'amalsayedroot'
+    _mysql_host = 'second2hand.mysql.pythonanywhere-services.com'
+    _mysql_db = 'second2hand$second2hand'
     _mysql_port = 3306
 
     def __init__(self) -> None:
@@ -116,7 +116,7 @@ class DBStorage:
     def close(self):
         '''This method closes the current session'''
         self.__session.remove()
-        
+
     def count(self, cls: object) -> int:
         """
         count the number of objects in storage
@@ -130,7 +130,7 @@ class DBStorage:
         if token:
             return self.__session.query(User).filter_by(token=token).first()
         return None
-    
+
     def finduser_byemail(self, uemail) -> object:
 
         '''This method retrieves an object from the current database session'''
@@ -146,7 +146,7 @@ class DBStorage:
         for item in results:
                 objects.append(item.to_dict())
         return (objects)
-    
+
     def get_user_favorites(self, user_id) -> List[dict]:
         '''This method retrieves an object from the current database session'''
         objects = []
@@ -174,7 +174,7 @@ class DBStorage:
             for item in items:
                 objects.append(item.to_dict())
         return (objects)
-    
+
     def get_items_by_location(self, loc_id: int, page: int, per_page: int) -> List[dict]:
         '''This method retrieves an object from the current database session'''
         start = (page - 1) * per_page
@@ -196,7 +196,7 @@ class DBStorage:
             for obj in result:
                 objects.append(obj.to_dict())
         return objects
-    
+
     def search_item_with_filters(self,location_id,cat_id,search_text, page, per_page) -> List[dict]:
         start = (page - 1) * per_page
         objects = []
@@ -217,17 +217,17 @@ class DBStorage:
             total_count = query.filter(*filters).count()
             total_pages = (total_count + per_page - 1) // per_page
         return {'items': objects, 'total_pages': total_pages}
-    
-    def delete_favourite(self,item_id, user_id: int) -> bool:
+
+    def delete_favourite(self,item_id, user_id) -> bool:
         '''This method retrieves an object from the current database session'''
         if item_id and user_id:
             obj = self.__session.query(Favorite).filter(Favorite.item_id ==item_id , Favorite.user_id == user_id ).first()
-            if obj: 
+            if obj:
                 self.delete(obj=obj)
                 return True
         return False
-    
-    def get_searches_by_user(self, user_id: int) -> List[dict]:
+
+    def get_searches_by_user(self, user_id) -> List[dict]:
         '''This method retrieves an object from the current database session'''
         objects = []
         if user_id:
@@ -237,7 +237,7 @@ class DBStorage:
                 objects.append(search.to_dict()['name'])
         return objects
 
-    def get_items(self, name: str, description: str) -> List[dict]:
+    def get_items(self, name, description) -> List[dict]:
         '''This method retrieves an object from the current database session'''
         objects = []
         if name and description:
@@ -245,28 +245,30 @@ class DBStorage:
             for item in items:
                 objects.append(item.to_dict())
         return objects
-    
+
     def get_most_recent_items(self, page: int, per_page: int) -> List[dict]:
         '''This method retrieves an object from the current database session'''
         start = (page - 1) * per_page
-        end = start + per_page
         objects = []
         result = self.__session.query(Item).order_by(Item.id.desc()).offset(start).limit(per_page).all()
         for obj in result:
             objects.append(obj.to_dict())
         return objects
-    
+
+
     def count_items_by_category(self, category_id: int) -> int:
         '''Count items with the same category'''
         count = self.__session.query(func.count(Item.id)).filter(Item.category_id == category_id).scalar()
         return count
-    
+
     def count_items_by_location(self, location_id: int) -> int:
         '''Count items with the same location'''
         count = self.__session.query(func.count(Item.id)).join(Location).filter(Location.id == location_id).scalar()
         return count
-    
+
     def count_items_by_user(self, user_id: int) -> int:
         '''Count items associated with a user'''
         count = self.__session.query(func.count(Item.id)).filter(Item.user_id == user_id).scalar()
         return count
+
+

@@ -1,21 +1,21 @@
 #!/usr/bin/python3
 """ objects that handle all default RestFul user API actions"""
 import os
-import uuid
 from api.v1.views import app_views
 from flask import abort, jsonify, make_response, request
 from flasgger.utils import swag_from
+import uuid
 from models import storage
 from models.user import User
 from models.categories import Category
 from models.favorites import Favorite
-from models.base_model import BaseModel
 import secrets
 from werkzeug.security import generate_password_hash, check_password_hash
+from models.base_model import BaseModel
 from flask import send_from_directory
 from helpers import save_image
 
-dir = os.path.expanduser("~/alx/second-hand/images/users")
+dir = os.path.expanduser("/home/second2hand/mysite/images/users")
 
 @app_views.route('/user', methods=['POST'], strict_slashes=False)
 def add_user():
@@ -26,18 +26,18 @@ def add_user():
         abort(400, description="Not a JSON")
 
     if 'email' not in request.get_json():
-        abort(400, description="Missing user email")
+        return jsonify({'message': 'Missing user email'}), 400
     if 'name'  not in request.get_json():
-        abort(400, description="Missing user name")
+        return jsonify({'message': 'Missing user name'}), 400
     if 'password' not in request.get_json():
-        abort(400, description="Missing user password")
+        return jsonify({'message': 'Missing user password'}), 400
     if 'phone_number' not in request.get_json():
-        abort(400, description="Missing user whatsapp number")
-    
+        return jsonify({'message': 'Missing user whatsapp number'}), 400
+
     user = storage.finduser_byemail(request.json.get('email'))
     if user:
-        return jsonify({'error': 'User already exists'}), 400
-    
+        return jsonify({'message': 'User already exists'}), 400
+
     """ Generate a unique salt for each user"""
     salt = secrets.token_hex(16)
     encrypted_password = request.json.get('password')
@@ -49,14 +49,14 @@ def add_user():
     data['password'] = password_hash
     data['salt'] = salt
     data['token'] = random_token
-    
+
     if 'picture' in request.get_json():
         data['picture'] = save_image(data, dir)
 
     instance = User(**data)
     instance.save()
-    return make_response(jsonify(instance.to_dict()), 201)
-    
+
+    return make_response(jsonify({'data':instance.to_dict(),'message':'user created sucessfuly'}), 201)
 
 @app_views.route('/user', methods=['GET'], strict_slashes=False)
 def get_user():
@@ -65,9 +65,9 @@ def get_user():
     user = storage.getuser_bytoken(token)
     if not user:
         abort(400,description="not avalid user")
-    return jsonify(user.to_dict())
+    return jsonify({'data':user.to_dict(),'message':'user retrieved sucessfuly'}), 200
 
-@app_views.route('/user.login', methods=['GET'], strict_slashes=False)
+@app_views.route('/user.login', methods=['Post'], strict_slashes=False)
 def user_login():
 
     email = request.json.get('email')
@@ -79,11 +79,11 @@ def user_login():
         abort(400, description="Missing password")
     user = storage.finduser_byemail(email)
     if not user:
-        return jsonify({'error': 'User not found'}), 400
+        return jsonify({'message': 'User not found'}), 401
     if check_password_hash(user.password, password + user.salt):
-        return jsonify({'message': 'Login successful'}), 200
+        return jsonify({'data':user.to_dict(),'message':'Login sucessfuly'}), 200
     else:
-        return jsonify({'error': 'Incorrect password'}), 401
+        return jsonify({'message': 'Incorrect password'}),401
 
 
 @app_views.route('/user', methods=['PUT'], strict_slashes=False)
@@ -118,7 +118,8 @@ def put_user():
             else:
                 setattr(user, key, value)
     storage.save()
-    return make_response(jsonify(user.to_dict()), 200)
+    return make_response(jsonify({'data':user.to_dict(),'message':'updated sucessfuly'}), 200)
+
 
 @app_views.route('/favorites', methods=['GET'], strict_slashes=False)
 def get_userfavorites():
@@ -146,7 +147,7 @@ def add_userfavorites():
         abort(400, description="Missing item_id")
     id =request.json.get("user_id")
     if(id != user.id):
-        abort(400,description="not valid user id")  
+        abort(400,description="not valid user id")
 
     data = request.get_json()
     instance = Favorite(**data)
@@ -173,7 +174,7 @@ def delete_favorite():
         abort(400, description="Missing item id")
     user_id =request.json.get("user_id")
     if(user_id != user.id):
-        abort(400,description="not valid user id") 
+        abort(400,description="not valid user id")
     itemid= request.json.get("item_id")
 
     status =storage.delete_favourite(item_id=itemid,user_id=user.id)
@@ -185,3 +186,4 @@ def delete_favorite():
 @app_views.route('/users_photos/<path:filename>', methods=['GET'], strict_slashes=False)
 def get_user_photo(filename):
     return send_from_directory(dir, filename)
+

@@ -14,19 +14,19 @@ class User(BaseModel, Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(128), nullable=False)
-    email = Column(String(128), nullable=False, unique=True)
+    email = Column(String(128), nullable=False)
     password = Column(String(128), nullable=False)
     phone_number = Column(String(128), nullable=False)
     picture = Column(String(128), nullable=True)
     token = Column(String(128), nullable=False, unique=True)
     salt = Column(String(128), nullable=False)
     favorites = relationship("Favorite", back_populates="user")
-    searches = relationship("Search", back_populates="user")
     following = relationship(
         "User", secondary='followers',
         primaryjoin=id == Follower.follower_id,
         secondaryjoin=id == Follower.following_id,
         backref="followers")
+    searches = relationship("Search", back_populates="user")
 
     def __init__(self, *args, **kwargs):
         '''initializes a user'''
@@ -39,7 +39,7 @@ class User(BaseModel, Base):
             'name': self.name,
             'email': self.email,
             'phone_number': self.phone_number,
-            'picture': self.picture.decode('utf-8') if self.picture is not None else None,
+            'picture': self.picture,
             'token': self.token,
 
         }

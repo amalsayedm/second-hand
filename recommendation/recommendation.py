@@ -21,6 +21,9 @@ def get_recommendations(user_id):
     all_items = [[item['name'], item['description']]
                  for item in storage.all(Item)]
 
+    if len(all_items) == 0:
+        return []
+
     encoder = OneHotEncoder()
     items_encoded = encoder.fit_transform(all_items)
 

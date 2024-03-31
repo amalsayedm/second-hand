@@ -38,7 +38,7 @@ class Item(BaseModel, Base):
             'name': self.name,
             'description': self.description,
             'price': self.price,
-            'picture': self.picture.decode('utf-8'),
+            'picture': self.picture,
             'size': self.size,
             'user_id': self.user_id,
             'category_id': self.category_id,

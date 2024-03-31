@@ -32,7 +32,7 @@ def add_category():
         abort(400, description="Missing category name")
     if 'picture' not in request.get_json():
         abort(400, description="Missing category picture")
-    
+
     data = request.get_json()
     name = save_image(data, dir)
 
@@ -44,3 +44,4 @@ def add_category():
 @app_views.route('/categories_photos/<path:filename>', methods=['GET'], strict_slashes=False)
 def get_photo(filename):
     return send_from_directory(dir, filename)
+
