@@ -15,7 +15,7 @@ class Item(BaseModel, Base):
     name = Column(String(128), nullable=False)
     description = Column(String(128), nullable=False)
     price = Column(Integer, nullable=False)
-    picture = Column(LargeBinary, nullable=False)
+    picture = Column(String(128), nullable=False)
     size = Column(String(128), nullable=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     category_id = Column(Integer, ForeignKey('categories.id'), nullable=False)
