@@ -1,0 +1,6 @@
+setup_mysql_dev.sql
+.vscode/
+__pycache__
+procfile
+requirements.txt
+images/
