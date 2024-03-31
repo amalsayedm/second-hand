@@ -14,7 +14,7 @@ class User(BaseModel, Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(128), nullable=False)
-    email = Column(String(128), nullable=False)
+    email = Column(String(128), nullable=False, unique=True)
     password = Column(String(128), nullable=False)
     phone_number = Column(String(128), nullable=False)
     picture = Column(String(128), nullable=True)

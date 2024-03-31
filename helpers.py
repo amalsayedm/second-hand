@@ -4,6 +4,7 @@ import os
 import base64
 import imghdr
 
+
 def save_image(data, dir):
     '''save image'''
     pic = data['picture']
@@ -15,7 +16,9 @@ def save_image(data, dir):
     if 'email' in data:
         name = data['email'].replace("@", "_").replace(".", "_")
     elif 'price' in data:
-        name = data['name'].replace(" ", "_") + str(data['price']).replace(" ", "_") + str(data['user_id']).replace(" ", "_")
+        name = data['name'].replace(" ", "_")
+        name += str(data['price']).replace(" ", "_")
+        name += str(data['user_id']).replace(" ", "_")
     else:
         name = data['name'].replace(" ", "_")
     name = f"{name}.{image_extension}" if image_extension else f"{name}.jpg"

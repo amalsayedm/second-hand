@@ -25,7 +25,7 @@ class BaseModel:
             models.storage.new(self)
             models.storage.save()
             return True
-        except:
+        except Exception:
             return False
 
     @classmethod

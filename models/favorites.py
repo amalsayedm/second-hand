@@ -2,7 +2,7 @@
 '''this module defines the Favourite class'''
 
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, Integer,ForeignKey, UniqueConstraint
+from sqlalchemy import Column, Integer, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 

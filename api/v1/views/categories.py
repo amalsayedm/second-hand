@@ -11,10 +11,13 @@ from helpers import save_image
 
 dir = os.path.expanduser("/home/second2hand/mysite/images/categories")
 
+
 @app_views.route('/categories', methods=['GET'], strict_slashes=False)
 def get_categories():
+    """get all categories"""
     all_categories = storage.all(Category)
     return make_response(jsonify(all_categories), 200)
+
 
 @app_views.route('/categories', methods=['POST'], strict_slashes=False)
 def add_category():
@@ -23,7 +26,7 @@ def add_category():
     """
     auth = request.headers.get('Authorization')
     if auth != "admin":
-        abort(400,description="Admin access required")
+        abort(400, description="Admin access required")
 
     if not request.get_json():
         abort(400, description="Not a JSON")
@@ -36,12 +39,15 @@ def add_category():
     data = request.get_json()
     name = save_image(data, dir)
 
-    instance = Category(name = data['name'], picture = name)
+    instance = Category(name=data['name'], picture=name)
     BaseModel.save(instance)
 
     return make_response(jsonify(instance.to_dict()), 201)
 
-@app_views.route('/categories_photos/<path:filename>', methods=['GET'], strict_slashes=False)
-def get_photo(filename):
-    return send_from_directory(dir, filename)
 
+@app_views.route(
+    '/categories_photos/<path:filename>',
+    methods=['GET'], strict_slashes=False)
+def get_photo(filename):
+    """access photo of category"""
+    return send_from_directory(dir, filename)

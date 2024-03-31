@@ -6,6 +6,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, LargeBinary
 from sqlalchemy.orm import relationship
 from models.favorites import Favorite
 from models.user import User
+from models.locations import Location
 
 
 class Item(BaseModel, Base):
@@ -22,7 +23,6 @@ class Item(BaseModel, Base):
     location_id = Column(Integer, ForeignKey('locations.id'), nullable=False)
     favorites = relationship("Favorite", back_populates="item")
 
-
     def __init__(self, *args, **kwargs):
         '''initializes an item'''
         super().__init__(*args, **kwargs)
@@ -32,6 +32,8 @@ class Item(BaseModel, Base):
         from models import storage
         user = storage.get(User, self.user_id)
         phone_number = user.phone_number if user else None
+        location = storage.get(Location, self.location_id)
+        location_name = location.name if location else None
 
         return {
             'id': self.id,
@@ -43,5 +45,6 @@ class Item(BaseModel, Base):
             'user_id': self.user_id,
             'category_id': self.category_id,
             'location_id': self.location_id,
-            'contact' : phone_number
+            'contact': phone_number,
+            'location_name': location_name
         }

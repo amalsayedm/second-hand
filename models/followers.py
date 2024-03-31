@@ -14,7 +14,10 @@ class Follower(BaseModel, Base):
     following_id = Column(Integer, ForeignKey('users.id'), nullable=False)
 
     __table_args__ = (
-        UniqueConstraint('follower_id', 'following_id', name='unique_follower_following'),
+        UniqueConstraint(
+            'follower_id',
+            'following_id',
+            name='unique_follower_following'),
     )
 
     def __init__(self, *args, **kwargs):
