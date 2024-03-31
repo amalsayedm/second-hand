@@ -3,3 +3,4 @@ setup_mysql_dev.sql
 __pycache__
 procfile
 requirements.txt
+images/

@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 """ objects that handle all default RestFul user API actions"""
+import os
+import uuid
 from api.v1.views import app_views
 from flask import abort, jsonify, make_response, request
 from flasgger.utils import swag_from
@@ -10,8 +12,10 @@ from models.favorites import Favorite
 from models.base_model import BaseModel
 import secrets
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask import send_from_directory
+from helpers import save_image
 
-
+dir = os.path.expanduser("~/alx/second-hand/images/users")
 
 @app_views.route('/user', methods=['POST'], strict_slashes=False)
 def add_user():
@@ -39,15 +43,20 @@ def add_user():
     encrypted_password = request.json.get('password')
 
     password_hash = generate_password_hash( encrypted_password+ salt)
-
+    random_uuid = uuid.uuid4()
+    random_token = str(random_uuid)
     data = request.get_json()
     data['password'] = password_hash
     data['salt'] = salt
+    data['token'] = random_token
+    
+    if 'picture' in request.get_json():
+        data['picture'] = save_image(data, dir)
 
     instance = User(**data)
-    # instance.save()
-    BaseModel.save(instance)
+    instance.save()
     return make_response(jsonify(instance.to_dict()), 201)
+    
 
 @app_views.route('/user', methods=['GET'], strict_slashes=False)
 def get_user():
@@ -104,8 +113,8 @@ def put_user():
     for key, value in data.items():
         if key not in ignore:
             if key == 'picture':
-                    encoded_data = value.encode('utf-8')
-                    setattr(user, key, encoded_data)
+                    value = save_image(data, dir)
+                    setattr(user, key, value)
             else:
                 setattr(user, key, value)
     storage.save()
@@ -172,3 +181,7 @@ def delete_favorite():
         return make_response(jsonify({"Item not deleted"})), 400
 
     return make_response(jsonify({}), 200)
+
+@app_views.route('/users_photos/<path:filename>', methods=['GET'], strict_slashes=False)
+def get_user_photo(filename):
+    return send_from_directory(dir, filename)

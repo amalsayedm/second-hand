@@ -1,14 +1,13 @@
 #!/usr/bin/python3
 """ objects that handle all default RestFul categories API actions"""
 import os
-import base64
-import imghdr
 from api.v1.views import app_views
 from flask import abort, jsonify, make_response, request
 from models.categories import Category
 from models.base_model import BaseModel
 from models import storage
 from flask import send_from_directory
+from helpers import save_image
 
 dir = os.path.expanduser("/home/second2hand/mysite/images/categories")
 
@@ -35,20 +34,7 @@ def add_category():
         abort(400, description="Missing category picture")
     
     data = request.get_json()
-    pic = data['picture']
-    if pic.startswith("data:image/jpeg;base64,"):
-        pic = pic[len("data:image/jpeg;base64,"):]
-    pic_binary = base64.b64decode(pic)
-    image_extension = imghdr.what(None, pic_binary)
-
-    name = data['name'].replace(" ", "_")
-    name = f"{name}.{image_extension}" if image_extension else f"{name}.jpg"
-    os.makedirs(os.path.expanduser(dir), exist_ok=True)
-    file_name = os.path.join(
-        os.path.expanduser(dir),name)
-
-    with open(file_name, "wb") as file:
-        file.write(pic_binary)
+    name = save_image(data, dir)
 
     instance = Category(name = data['name'], picture = name)
     BaseModel.save(instance)

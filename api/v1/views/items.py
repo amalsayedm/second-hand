@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """ objects that handle all default RestFul user API actions"""
+import os
 from api.v1.views import app_views
 from flask import abort, jsonify, make_response, request
 from flasgger.utils import swag_from
@@ -11,7 +12,10 @@ from models.items import Item
 from models.search import Search
 from models.base_model import BaseModel
 from recommendation.recommendation import get_recommendations
+from helpers import save_image
+from flask import send_from_directory
 
+dir = os.path.expanduser("~/alx/second-hand/images/items")
 
 @app_views.route('/items', methods=['POST'], strict_slashes=False)
 def add_item():
@@ -42,6 +46,8 @@ def add_item():
    
     data = request.get_json()
     data['user_id'] = user.id
+    data['picture'] = save_image(data, dir)
+    
     instance = Item(**data)
     # instance.save()
     BaseModel.save(instance)
@@ -89,6 +95,8 @@ def put_item():
     ignore = ['id']
 
     data = request.get_json()
+    if 'picture' in data:
+        data['picture'] = save_image(data, dir)
     id_value = data.get('id')
     item =storage.update(Item,id_value,ignore_items=ignore,**data)
     return make_response(jsonify(item.to_dict()), 200)
@@ -183,3 +191,7 @@ def load_items():
 
     most_recent_items = storage.get_most_recent_items(page, per_page)
     return make_response(jsonify({'items':most_recent_items, 'next_page':next_page}), 200)
+
+@app_views.route('/items_photos/<path:filename>', methods=['GET'], strict_slashes=False)
+def get_items_photo(filename):
+    return send_from_directory(dir, filename)

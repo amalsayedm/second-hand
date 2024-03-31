@@ -17,7 +17,7 @@ class User(BaseModel, Base):
     email = Column(String(128), nullable=False, unique=True)
     password = Column(String(128), nullable=False)
     phone_number = Column(String(128), nullable=False)
-    picture = Column(LargeBinary, nullable=True)
+    picture = Column(String(128), nullable=True)
     token = Column(String(128), nullable=False, unique=True)
     salt = Column(String(128), nullable=False)
     favorites = relationship("Favorite", back_populates="user")
