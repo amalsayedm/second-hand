@@ -197,7 +197,8 @@ class DBStorage:
                 objects.append(obj.to_dict())
         return objects
     
-    def search_item_with_filters(self,location_id,cat_id,search_text) -> List[dict]:
+    def search_item_with_filters(self,location_id,cat_id,search_text, page, per_page) -> List[dict]:
+        start = (page - 1) * per_page
         objects = []
         query = self.__session.query(Item)
         query = query.join(Location)
@@ -210,10 +211,12 @@ class DBStorage:
         if search_text is not None:
             filters.append(Item.name.like('%'+search_text+'%'))
         if filters:
-            result = query.filter(*filters).all()
+            result = query.filter(*filters).offset(start).limit(per_page).all()
             for obj in result:
                 objects.append(obj.to_dict())
-        return objects
+            total_count = query.filter(*filters).count()
+            total_pages = (total_count + per_page - 1) // per_page
+        return {'items': objects, 'total_pages': total_pages}
     
     def delete_favourite(self,item_id, user_id: int) -> bool:
         '''This method retrieves an object from the current database session'''

@@ -63,18 +63,23 @@ def search_item():
 
     if not request.get_json():
         abort(400, description="Not a JSON")
-   
+    
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+    
     data = request.get_json()
     location_id = data.get('location_id')
     category_id = data.get('category_id')
     search_text = data.get('name')
-    result = storage.search_item_with_filters(location_id=location_id,cat_id=category_id,search_text=search_text)
+    result = storage.search_item_with_filters(location_id=location_id,cat_id=category_id,search_text=search_text, page=page, per_page=per_page)
+    items = result['items']
+    total_pages = result['total_pages']
+    next_page = page + 1 if page < total_pages else None
     if search_text:
         if user:
             searched = Search(user_id=user['id'], name=search_text)
             BaseModel.save(searched)
-    # Pagination
-    return make_response(jsonify(result), 200)
+    return make_response(jsonify({'items': items, 'next_page': next_page}), 200)
 
 @app_views.route('/items', methods=['PUT'], strict_slashes=False)
 def put_item():
