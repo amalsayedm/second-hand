@@ -132,17 +132,22 @@ def delete_item():
 
 @app_views.route('/items.by.category/<cat_id>', methods=['GET'], strict_slashes=False)
 def get_items_byCategory(cat_id):
-
-    items = storage.get_items_by_category(cat_id)
-    # Pagination
-    return make_response(jsonify(items), 200)
+    """items by category"""
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+    total_pages = (storage.count_items_by_category(cat_id) + per_page - 1) // per_page
+    next_page = page + 1 if page < total_pages else None
+    items = storage.get_items_by_category(cat_id, page, per_page)
+    return make_response(jsonify({'items':items, 'next_page': next_page}), 200)
 
 @app_views.route('/items.by.location/<loc_id>', methods=['GET'], strict_slashes=False)
 def get_items_byLocation(loc_id):
-
-    items = storage.get_items_by_location(loc_id)
-    # Pagination
-    return make_response(jsonify(items), 200)
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+    total_pages = (storage.count_items_by_location(loc_id) + per_page - 1) // per_page
+    items = storage.get_items_by_location(loc_id, page, per_page)
+    next_page = page + 1 if page < total_pages else None
+    return make_response(jsonify({'items': items, 'next_page': next_page}), 200)
 
 @app_views.route('/items', methods=['GET'], strict_slashes=False)
 def get_items_byuser():
@@ -156,9 +161,12 @@ def get_items_byuser():
     if not user:
         abort(400, description="not a valid user")
     
-    result = storage.getItemsbyuser(user.id)
-    # Pagination
-    return make_response(jsonify(result), 200)
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+    total_pages = (storage.count_items_by_user(user.id) + per_page - 1) // per_page
+    result = storage.getItemsbyuser(user.id, page, per_page)
+    next_page = page + 1 if page < total_pages else None
+    return make_response(jsonify({'items':result, 'next_page': next_page}), 200)
 
 @app_views.route("/load", methods=['Get'], strict_slashes=False)
 def load_items():
