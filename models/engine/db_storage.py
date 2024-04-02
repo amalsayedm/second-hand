@@ -59,14 +59,26 @@ class DBStorage:
         if self._mysql_db == 'test_second_hand':
             Base.metadata.drop_all(self.__engine)
 
-    def new(self, obj: object) -> None:
+    def new(self, obj: object) -> bool:
         '''This method adds a new object to the current database session'''
         if obj:
-            self.__session.add(obj)
+            try:
+                self.__session.add(obj)
+                return True
+            except Exception as e:
+                self.__session.rollback()
+                print(f"Error adding object to the database: {e}")
+                return False
 
-    def save(self) -> None:
+    def save(self) -> bool:
         '''This method commits all changes to the current database session'''
-        self.__session.commit()
+        try:
+            self.__session.commit()
+            return True
+        except Exception as e:
+            self.__session.rollback()
+            print(f"Error saving object to the database: {e}")
+            return False
 
     def all(self, cls=None) -> List[dict]:
         ''''This method queries the current database session

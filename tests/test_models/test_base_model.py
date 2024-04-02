@@ -42,7 +42,7 @@ class TestBaseModel(unittest.TestCase):
             phone_number='1234567890',
             token='2356',
             salt='salt123')
-        BaseModel.save(user1)
+        self.assertTrue(BaseModel.save(user1))
         self.assertTrue(user1.id)
 
     def test_base_model_save_all(self):
