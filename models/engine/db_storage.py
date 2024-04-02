@@ -34,14 +34,20 @@ class DBStorage:
     __engine = None
     __session = None
 
+    _mysql_user = 'second_hand_tester'
+    _mysql_pwd =  'Second_hand_pwd1'
+    _mysql_host = 'localhost'
+    _mysql_db = 'test_second_hand'
+    _mysql_port = 3306
+
     def __init__(self) -> None:
         '''This method creates a new instance of DBStorage'''
 
-        SECOND_HAND_MYSQL_USER = os.getenv('second_hand_mysql_user')
-        SECOND_HAND_MYSQL_PWD = os.getenv('second_hand_mysql_pwd')
-        SECOND_HAND_MYSQL_HOST = os.getenv('second_hand_mysql_host')
-        SECOND_HAND_MYSQL_DB = os.getenv('second_hand_mysql_db')
-        SECOND_HAND_MYSQL_PORT = os.getenv('second_hand_mysql_port')
+        SECOND_HAND_MYSQL_USER = os.getenv('second_hand_mysql_user') or self._mysql_user
+        SECOND_HAND_MYSQL_PWD = os.getenv('second_hand_mysql_pwd') or self._mysql_pwd
+        SECOND_HAND_MYSQL_HOST = os.getenv('second_hand_mysql_host') or self._mysql_host
+        SECOND_HAND_MYSQL_DB = os.getenv('second_hand_mysql_db') or self._mysql_db
+        SECOND_HAND_MYSQL_PORT = os.getenv('second_hand_mysql_port') or self._mysql_port
 
         self.__engine = create_engine('mysql+mysqldb://{}:{}@{}:{}/{}'
                                       .format(SECOND_HAND_MYSQL_USER,
@@ -49,6 +55,9 @@ class DBStorage:
                                               SECOND_HAND_MYSQL_HOST,
                                               SECOND_HAND_MYSQL_PORT,
                                               SECOND_HAND_MYSQL_DB))
+        
+        if self._mysql_db == 'test_second_hand':
+            Base.metadata.drop_all(self.__engine)
 
     def new(self, obj: object) -> None:
         '''This method adds a new object to the current database session'''
