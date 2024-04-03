@@ -1,16 +1,18 @@
-# second-hand
+# Second Hand
 
 ## Introduction
 
-This project was done by **[Alaa Ayman](https://github.com/AlaaAymanAbdElRaheem)** and **[Amal Sayed](https://github.com/amalsayedm)** as a protofilo project for Specializations at **ALX Software Engineering Program**.
+This project was done by **[Alaa Ayman](https://github.com/AlaaAymanAbdElRaheem)** and **[Amal Sayed](https://github.com/amalsayedm)** as a protofilo and graduation from the **ALX Software Engineering Program**.
 
 Everything from the design to the code and server configuration and deployment was done by us.
 
-This is the back-end part, you can find front-end here >> **[Second Hand](https://github.com/amalsayedm/secondhand)**
+This is the back-end repo, you can find front-end here >> **[Second Hand](https://github.com/amalsayedm/secondhand)**
 
-## What is second-hand?
+## What is Second Hand?
 
-second-hand a mobile application to sell used items. It designed to facilitate the sale of used items. Specifically focuses on closet and home essentials. Users will be able to upload pictures and details of items such as clothes, shoes, accessories, furniture, home decor, and other household items they no longer need but are still in good condition.
+second Hand is a mobile application to sell used items. It is designed to facilitate the sale of used items, Specifically focuses on closet and home essentials. Users will be able to upload pictures and details of items such as clothes, shoes, accessories, furniture, home decor, and other household items they no longer need but are still in good condition.
+
+We aim to provide an easy way for people to buy and sell second-hand belongings by creating a user-friendly online platform that prioritizes safety, transparency, and convenience. Whether it’s furniture, electronics, or clothing, our goal is to make the process of giving items a second life as seamless as possible.
 
 ## Built with
 
