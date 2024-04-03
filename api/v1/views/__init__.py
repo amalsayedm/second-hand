@@ -5,5 +5,6 @@ from api.v1.views.users import *
 from api.v1.views.items import *
 from api.v1.views.followers import *
 from api.v1.views.categories import *
+from api.v1.views.locations import *
 
 app_views = Blueprint('app_views', __name__, url_prefix='/api/v1')
