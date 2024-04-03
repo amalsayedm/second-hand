@@ -12,7 +12,7 @@ from models.items import Item
 from models.search import Search
 from models.base_model import BaseModel
 from recommendation.recommendation import get_recommendations
-from helpers import save_image
+from helpers import save_image, save_file
 from flask import send_from_directory
 
 dir = os.path.expanduser("/home/second2hand/mysite/images/items")
@@ -29,25 +29,32 @@ def add_item():
     if not user:
         abort(400, description="not a valid user")
 
-    if not request.get_json():
-        abort(400, description="Not a JSON")
-
-    if 'name' not in request.get_json():
-        abort(400, description="Missing item name")
-    if 'description' not in request.get_json():
-        abort(400, description="Missing item description")
-    if 'price' not in request.get_json():
-        abort(400, description="Missing item price")
-    if 'picture' not in request.get_json():
-        abort(400, description="Missing item picture")
-    if 'category_id' not in request.get_json():
-        abort(400, description="Missing item category id")
-    if 'location_id' not in request.get_json():
-        abort(400, description="Missing item Location")
-
-    data = request.get_json()
+    required_fields = [
+        'name',
+        'description',
+        'price',
+        'category_id',
+        'location_id']
+    for field in required_fields:
+        if field not in request.form:
+            abort(400, description=f"Missing {field}")
+    data = {}
+    data['name'] = request.form.get('name')
+    data['description'] = request.form.get('description')
+    data['price'] = request.form.get('price')
+    data['category_id'] = request.form.get('category_id')
+    data['location_id'] = request.form.get('location_id')
     data['user_id'] = user.id
-    data['picture'] = save_image(data, dir)
+
+    if not request.files or 'picture' not in request.files:
+        abort(400, description="No file part or missing item picture")
+    file = request.files['picture']
+    if file.filename == '':
+        abort(400, description="No selected file")
+
+    file_name = save_file(data, file, dir)
+
+    data['picture'] = file_name
     instance = Item(**data)
     instance.save()
     return make_response(jsonify(instance.to_dict()), 201)

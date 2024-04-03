@@ -55,7 +55,7 @@ class DBStorage:
                                               SECOND_HAND_MYSQL_HOST,
                                               SECOND_HAND_MYSQL_PORT,
                                               SECOND_HAND_MYSQL_DB))
-        
+
         if self._mysql_db == 'test_second_hand':
             Base.metadata.drop_all(self.__engine)
 

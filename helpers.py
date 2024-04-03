@@ -3,6 +3,7 @@
 import os
 import base64
 import imghdr
+from werkzeug.utils import secure_filename
 
 
 def save_image(data, dir):
@@ -29,3 +30,18 @@ def save_image(data, dir):
     with open(file_name, "wb") as file:
         file.write(pic_binary)
     return str(name)
+
+
+def save_file(data, file, dir):
+    '''save items and users pictures'''
+    image_extension = secure_filename(file.filename).split('.')[-1]
+    if 'email' in data:
+        name = data['email'].replace("@", "_").replace(".", "_")
+    elif 'price' in data:
+        name = data['name'].replace(" ", "_")
+        name += str(data['price']).replace(" ", "_")
+        name += str(data['user_id']).replace(" ", "_")
+    file_name = f"{name}.{image_extension}"
+    file_path = os.path.join(dir, file_name)
+    file.save(file_path)
+    return str(file_name)

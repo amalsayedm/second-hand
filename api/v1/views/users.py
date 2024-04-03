@@ -13,7 +13,7 @@ import secrets
 from werkzeug.security import generate_password_hash, check_password_hash
 from models.base_model import BaseModel
 from flask import send_from_directory
-from helpers import save_image
+from helpers import save_image, save_file
 
 dir = os.path.expanduser("/home/second2hand/mysite/images/users")
 
@@ -23,36 +23,37 @@ def add_user():
     """
     Creates a user
     """
-    if not request.get_json():
-        abort(400, description="Not a JSON")
 
-    if 'email' not in request.get_json():
-        return jsonify({'message': 'Missing user email'}), 400
-    if 'name' not in request.get_json():
-        return jsonify({'message': 'Missing user name'}), 400
-    if 'password' not in request.get_json():
-        return jsonify({'message': 'Missing user password'}), 400
-    if 'phone_number' not in request.get_json():
-        return jsonify({'message': 'Missing user whatsapp number'}), 400
+    required_fields = ['email', 'name', 'password', 'phone_number']
+    for field in required_fields:
+        if field not in request.form:
+            abort(400, description=f"Missing {field}")
 
-    user = storage.finduser_byemail(request.json.get('email'))
+    data = {}
+    data['name'] = request.form.get('name')
+    data['email'] = request.form.get('email')
+    data['password'] = request.form.get('password')
+    data['phone_number'] = request.form.get('phone_number')
+
+    user = storage.finduser_byemail(data['email'])
     if user:
         return jsonify({'message': 'User already exists'}), 400
 
     """ Generate a unique salt for each user"""
     salt = secrets.token_hex(16)
-    encrypted_password = request.json.get('password')
+    encrypted_password = data['password']
 
     password_hash = generate_password_hash(encrypted_password + salt)
     random_uuid = uuid.uuid4()
     random_token = str(random_uuid)
-    data = request.get_json()
+
     data['password'] = password_hash
     data['salt'] = salt
     data['token'] = random_token
 
-    if 'picture' in request.get_json():
-        data['picture'] = save_image(data, dir)
+    if 'picture' in request.files:
+        file = request.files['picture']
+        data['picture'] = save_file(data, file, dir)
 
     instance = User(**data)
     instance.save()
@@ -60,8 +61,7 @@ def add_user():
     return make_response(
         jsonify({
             'data': instance.to_dict(),
-            'message': 'user created sucessfuly'
-            }),
+            'message': 'user created sucessfuly'}),
         201)
 
 
