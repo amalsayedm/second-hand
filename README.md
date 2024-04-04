@@ -49,6 +49,9 @@ Our goal is to create a seamless and efficient online marketplace for second-han
 
 ## Video Demo
 
+https://github.com/amalsayedm/secondhand/assets/125518249/686bb2c4-9a9f-4847-8b8f-85a7efbeb386
+
+
 ## Contributers
 
 [Amal Sayed](https://github.com/amalsayedm)
